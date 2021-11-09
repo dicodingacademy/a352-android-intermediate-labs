@@ -24,14 +24,6 @@ class MainActivity : AppCompatActivity() {
     private val right = mBitmap.width - left
     private val bottom = mBitmap.height.toFloat() - 50F
 
-    private val blackColor = ResourcesCompat.getColor(resources, R.color.black, null)
-    private val whiteColor = ResourcesCompat.getColor(resources, R.color.white, null)
-    private val brownColor = ResourcesCompat.getColor(resources, R.color.brown_hair, null)
-    private val anotherBrownColor = ResourcesCompat.getColor(resources, R.color.brown_anotherHair, null)
-    private val yellowColor = ResourcesCompat.getColor(resources, R.color.yellow_skin, null)
-    private val anotherYellowColor = ResourcesCompat.getColor(resources, R.color.yellow_anotherSkin, null)
-    private val redColor = ResourcesCompat.getColor(resources, R.color.red_ear, null)
-
     private val message = "Apakah kamu suka Dicoding?"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,32 +60,32 @@ class MainActivity : AppCompatActivity() {
     private fun showFace() {
         val face = RectF(left, top, right, bottom)
 
-        mPaint.color = anotherYellowColor
+        mPaint.color = ResourcesCompat.getColor(resources, R.color.yellow_anotherSkin, null)
         mCanvas.drawArc(face, 90F, 180F, false, mPaint)
 
-        mPaint.color = yellowColor
+        mPaint.color = ResourcesCompat.getColor(resources, R.color.yellow_skin, null)
         mCanvas.drawArc(face, 270F, 180F, false, mPaint)
     }
 
     private fun showLip(isHappy: Boolean) {
         when (isHappy) {
             true -> {
-                mPaint.color = blackColor
+                mPaint.color = ResourcesCompat.getColor(resources, R.color.black, null)
                 val lip = RectF(halfOfWidth - 200F, halfOfHeight - 100F, halfOfWidth + 200F, halfOfHeight + 400F)
                 mCanvas.drawArc(lip, 25F, 130F, false, mPaint)
 
-                mPaint.color = whiteColor
+                mPaint.color = ResourcesCompat.getColor(resources, R.color.white, null)
                 val mouth = RectF(halfOfWidth - 180F, halfOfHeight, halfOfWidth + 180F, halfOfHeight + 380F)
                 mCanvas.drawArc(mouth, 25F, 130F, false, mPaint)
 
 
             }
             false -> {
-                mPaint.color = blackColor
+                mPaint.color = ResourcesCompat.getColor(resources, R.color.black, null)
                 val lip = RectF(halfOfWidth - 200F, halfOfHeight + 250F, halfOfWidth + 200F, halfOfHeight + 360F)
                 mCanvas.drawArc(lip, 0F, -180F, false, mPaint)
 
-                mPaint.color = whiteColor
+                mPaint.color = ResourcesCompat.getColor(resources, R.color.white, null)
                 val mouth = RectF(halfOfWidth - 180F, halfOfHeight + 260F, halfOfWidth + 180F, halfOfHeight + 330F)
                 mCanvas.drawArc(mouth, 0F, -180F, false, mPaint)
             }
@@ -101,17 +93,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showEyes() {
-        mPaint.color = blackColor
+        mPaint.color = ResourcesCompat.getColor(resources, R.color.black, null)
         mCanvas.drawCircle(halfOfWidth - 100F, halfOfHeight - 10F, 50F, mPaint)
         mCanvas.drawCircle(halfOfWidth + 100F, halfOfHeight - 10F, 50F, mPaint)
 
-        mPaint.color = whiteColor
+        mPaint.color = ResourcesCompat.getColor(resources, R.color.white, null)
         mCanvas.drawCircle(halfOfWidth - 120F, halfOfHeight - 20F, 15F, mPaint)
         mCanvas.drawCircle(halfOfWidth + 80F, halfOfHeight - 20F, 15F, mPaint)
     }
 
     private fun showNoise() {
-        mPaint.color = blackColor
+        mPaint.color = ResourcesCompat.getColor(resources, R.color.black, null)
         mCanvas.drawCircle(halfOfWidth - 40F, halfOfHeight + 140F, 15F, mPaint)
         mCanvas.drawCircle(halfOfWidth + 40F, halfOfHeight + 140F, 15F, mPaint)
     }
@@ -123,7 +115,7 @@ class MainActivity : AppCompatActivity() {
     private fun showText() {
         val mPaintText =  Paint(Paint.FAKE_BOLD_TEXT_FLAG).apply {
             textSize = 50F
-            color = blackColor
+            color = ResourcesCompat.getColor(resources, R.color.black, null)
         }
 
         val mBounds = Rect()
@@ -135,13 +127,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showEar() {
-        mPaint.color = anotherBrownColor
+        mPaint.color = ResourcesCompat.getColor(resources, R.color.brown_anotherHair, null)
         mCanvas.drawCircle(halfOfWidth - 300F, halfOfHeight - 100F, 100F, mPaint)
 
-        mPaint.color = brownColor
+        mPaint.color = ResourcesCompat.getColor(resources, R.color.brown_hair, null)
         mCanvas.drawCircle(halfOfWidth + 300F, halfOfHeight - 100F, 100F, mPaint)
 
-        mPaint.color = redColor
+        mPaint.color = ResourcesCompat.getColor(resources, R.color.red_ear, null)
         mCanvas.drawCircle(halfOfWidth - 300F, halfOfHeight - 100F, 60F, mPaint)
         mCanvas.drawCircle(halfOfWidth + 300F, halfOfHeight - 100F, 60F, mPaint)
 
@@ -166,10 +158,10 @@ class MainActivity : AppCompatActivity() {
 
         val face = RectF(left, top, right, bottom)
 
-        mPaint.color = anotherBrownColor
+        mPaint.color = ResourcesCompat.getColor(resources, R.color.brown_anotherHair, null)
         mCanvas.drawArc(face, 90F, 180F, false, mPaint)
 
-        mPaint.color = brownColor
+        mPaint.color = ResourcesCompat.getColor(resources, R.color.brown_hair, null)
         mCanvas.drawArc(face, 270F, 180F, false, mPaint)
 
         mCanvas.restore()

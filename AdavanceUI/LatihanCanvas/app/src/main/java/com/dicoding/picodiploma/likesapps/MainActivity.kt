@@ -34,38 +34,41 @@ class MainActivity : AppCompatActivity() {
         showText()
 
         binding.like.setOnClickListener {
-            clearCanvas()
             showFace()
             showLip(true)
             showEyes()
-            showNoise()
-            showText()
         }
 
         binding.dislike.setOnClickListener {
-            clearCanvas()
             showFace()
             showLip(false)
             showEyes()
-            showNoise()
-            showText()
         }
 
     }
 
     private fun showFace() {
-        val rectF = RectF(left, top, right, bottom)
+        val face = RectF(left, top, right, bottom)
 
-        mPaint.color = ResourcesCompat.getColor(resources, R.color.yellow_anotherSkin, null)
-        mCanvas.drawArc(rectF, 90F, 180F, false, mPaint)
+        mPaint.color = ResourcesCompat.getColor(resources, R.color.yellow_left_skin, null)
+        mCanvas.drawArc(face, 90F, 180F, false, mPaint)
 
-        mPaint.color = ResourcesCompat.getColor(resources, R.color.yellow_skin, null)
-        mCanvas.drawArc(rectF, 270F, 180F, false, mPaint)
+        mPaint.color = ResourcesCompat.getColor(resources, R.color.yellow_right_skin, null)
+        mCanvas.drawArc(face, 270F, 180F, false, mPaint)
 
     }
 
-    private fun showLip(isHappy: Boolean) {
+    private fun showEyes() {
+        mPaint.color = ResourcesCompat.getColor(resources, R.color.black, null)
+        mCanvas.drawCircle(halfOfWidth - 100F, halfOfHeight - 10F, 50F, mPaint)
+        mCanvas.drawCircle(halfOfWidth + 100F, halfOfHeight - 10F, 50F, mPaint)
 
+        mPaint.color = ResourcesCompat.getColor(resources, R.color.white, null)
+        mCanvas.drawCircle(halfOfWidth - 120F, halfOfHeight - 20F, 15F, mPaint)
+        mCanvas.drawCircle(halfOfWidth + 80F, halfOfHeight - 20F, 15F, mPaint)
+    }
+
+    private fun showLip(isHappy: Boolean) {
         when (isHappy) {
             true -> {
                 mPaint.color = ResourcesCompat.getColor(resources, R.color.black, null)
@@ -88,26 +91,6 @@ class MainActivity : AppCompatActivity() {
                 mCanvas.drawArc(mouth, 0F, -180F, false, mPaint)
             }
         }
-
-    }
-
-    private fun showEyes() {
-        mPaint.color = ResourcesCompat.getColor(resources, R.color.black, null)
-        mCanvas.drawCircle(halfOfWidth - 100F, halfOfHeight - 10F, 50F, mPaint)
-        mCanvas.drawCircle(halfOfWidth + 100F, halfOfHeight - 10F, 50F, mPaint)
-
-        mPaint.color = ResourcesCompat.getColor(resources, R.color.white, null)
-        mCanvas.drawCircle(halfOfWidth - 120F, halfOfHeight - 20F, 15F, mPaint)
-        mCanvas.drawCircle(halfOfWidth + 80F, halfOfHeight - 20F, 15F, mPaint)
-    }
-
-    private fun showNoise() {
-        mPaint.color = ResourcesCompat.getColor(resources, R.color.black, null)
-        mCanvas.drawCircle(halfOfWidth - 40F, halfOfHeight + 140F, 15F, mPaint)
-        mCanvas.drawCircle(halfOfWidth + 40F, halfOfHeight + 140F, 15F, mPaint)
-    }
-    private fun clearCanvas() {
-        mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC)
     }
 
     private fun showText() {

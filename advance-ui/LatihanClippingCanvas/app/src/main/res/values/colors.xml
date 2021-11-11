@@ -8,9 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="brown_hair">#A2693F</color>
-    <color name="brown_anotherHair">#C4814D</color>
-    <color name="yellow_skin">#FCCD7A</color>
-    <color name="yellow_anotherSkin">#FEF89F</color>
+    <color name="brown_right_hair">#A2693F</color>
+    <color name="brown_left_hair">#C4814D</color>
+    <color name="yellow_right_skin">#FCCD7A</color>
+    <color name="yellow_left_skin">#FEF89F</color>
     <color name="red_ear">#F47F67</color>
 </resources>

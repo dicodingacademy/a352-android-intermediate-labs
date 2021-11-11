@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.core.content.res.ResourcesCompat
 import com.dicoding.picodiploma.likesapps.databinding.ActivityMainBinding
-import android.graphics.PorterDuff
 
 class MainActivity : AppCompatActivity() {
 

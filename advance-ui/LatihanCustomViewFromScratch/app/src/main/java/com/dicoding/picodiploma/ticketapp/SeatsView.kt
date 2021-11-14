@@ -36,31 +36,29 @@ class SeatsView : View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
+        for (seat in seats) {
+            drawSeat(canvas, seat)
+        }
+
         val text = "Silakan Pilih Kursi"
         titlePaint.apply {
             textSize = 50F
         }
         canvas?.drawText(text, (width / 2F) - 197F, 100F, titlePaint)
-
-        for (seat in seats) {
-            drawSeat(canvas, seat)
-        }
-
-
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
 
         seats.apply {
-            add(Seat(1, (width / 2) - 400F, (height / 2) - 700F, "A1",false))
-            add(Seat(2, (width / 2) + 100F, (height / 2) - 700F, "A2",false))
-            add(Seat(3, (width / 2) - 400F, (height / 2) - 300F, "B1",false))
+            add(Seat(1, (width / 2) - 300F, (height / 2) - 600F, "A1",false))
+            add(Seat(2, (width / 2) + 100F, (height / 2) - 600F, "A2",false))
+            add(Seat(3, (width / 2) - 300F, (height / 2) - 300F, "B1",false))
             add(Seat(4, (width / 2) + 100F, (height / 2) - 300F, "B2",false))
-            add(Seat(5, (width / 2) - 400F, (height / 2) + 100F, "C1",false))
-            add(Seat(6, (width / 2) + 100F, (height / 2) + 100F, "C2",false))
-            add(Seat(7, (width / 2) - 400F, (height / 2) + 500F, "D1",false))
-            add(Seat(8, (width / 2) + 100F, (height / 2) + 500F, "D2",false))
+            add(Seat(5, (width / 2) - 300F, (height / 2) + 0F, "C1",false))
+            add(Seat(6, (width / 2) + 100F, (height / 2) + 0F, "C2",false))
+            add(Seat(7, (width / 2) - 300F, (height / 2) + 300F, "D1",false))
+            add(Seat(8, (width / 2) + 100F, (height / 2) + 300F, "D2",false))
         }
     }
 
@@ -82,30 +80,30 @@ class SeatsView : View {
         }
 
         val backgroundPath = Path()
-        backgroundPath.addRect(0F, 0F, 300F, 300F, Path.Direction.CCW)
-        backgroundPath.addCircle(150F, 50F, 100F, Path.Direction.CCW)
+        backgroundPath.addRect(0F, 0F, 200F, 200F, Path.Direction.CCW)
+        backgroundPath.addCircle(100F, 50F, 75F, Path.Direction.CCW)
         canvas?.drawPath(backgroundPath, backgroundPaint)
 
         // Sandaran Tangan
         val armrestPath = Path()
-        armrestPath.addRect(0F, 0F, 50F, 300F, Path.Direction.CCW)
+        armrestPath.addRect(0F, 0F, 50F, 200F, Path.Direction.CCW)
         canvas?.drawPath(armrestPath, armrestPaint)
-        canvas?.translate(250F, 0F)
-        armrestPath.addRect(0F, 0F, 50F, 300F, Path.Direction.CCW)
+        canvas?.translate(150F, 0F)
+        armrestPath.addRect(0F, 0F, 50F, 200F, Path.Direction.CCW)
         canvas?.drawPath(armrestPath, armrestPaint)
 
         // Bagian Bawah Kursi
-        canvas?.translate(-250F, 250F)
+        canvas?.translate(-150F, 175F)
         val bottomSeatPath = Path()
-        bottomSeatPath.addRect(0F, 0F, 300F, 50F, Path.Direction.CCW)
+        bottomSeatPath.addRect(0F, 0F, 200F, 25F, Path.Direction.CCW)
         canvas?.drawPath(bottomSeatPath, bottomSeatPaint)
 
-        canvas?.translate(0F, -250F)
+        canvas?.translate(0F, -175F)
         numberSeatPaint.apply {
-            textSize = 100F
+            textSize = 50F
             numberSeatPaint.getTextBounds(seat.name, 0, seat.name.length, mBounds)
         }
-        canvas?.drawText(seat.name, 150F - mBounds.centerX(), 150F, numberSeatPaint)
+        canvas?.drawText(seat.name, 100F - mBounds.centerX(), 100F, numberSeatPaint)
 
         canvas?.restore()
 
@@ -115,21 +113,21 @@ class SeatsView : View {
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         when (event?.action) {
             ACTION_DOWN -> {
-                if (event.x in ((width / 2) - 400F)..((width / 2) - 100F) && event.y in ((height / 2) - 700F)..((height / 2) - 400F)) {
+                if (event.x in ((width / 2) - 300F)..((width / 2) - 100F) && event.y in ((height / 2) - 600F)..((height / 2) - 400F)) {
                     booking(0)
-                } else if (event.x in ((width / 2) + 100F)..((width / 2) + 400F) && event.y in ((height / 2) - 700F)..((height / 2) - 400F)) {
+                } else if (event.x in ((width / 2) + 100F)..((width / 2) + 300F) && event.y in ((height / 2) - 600F)..((height / 2) - 400F)) {
                     booking(1)
-                } else if (event.x in ((width / 2) - 400F)..((width / 2) - 100F) && event.y in ((height / 2) - 300F)..((height / 2).toFloat())) {
+                } else if (event.x in ((width / 2) - 300F)..((width / 2) - 100F) && event.y in ((height / 2) - 300F)..((height / 2) - 100F)) {
                     booking(2)
-                } else if (event.x in ((width / 2) + 100F)..((width / 2) + 400F) && event.y in ((height / 2) - 300F)..((height / 2).toFloat())) {
+                } else if (event.x in ((width / 2) + 100F)..((width / 2) + 300F) && event.y in ((height / 2) - 300F)..((height / 2) - 100F)) {
                     booking(3)
-                } else if (event.x in ((width / 2) - 400F)..((width / 2) - 100F) && event.y in ((height / 2) + 100F)..((height / 2) + 400F)) {
+                } else if (event.x in ((width / 2) - 300F)..((width / 2) - 100F) && event.y in ((height / 2) + 0F)..((height / 2) + 200F)) {
                     booking(4)
-                } else if (event.x in ((width / 2) + 100F)..((width / 2) + 400F) && event.y in ((height / 2) + 100F)..((height / 2) + 400F)) {
+                } else if (event.x in ((width / 2) + 100F)..((width / 2) + 300F) && event.y in ((height / 2) + 0F)..((height / 2) + 200F)) {
                     booking(5)
-                } else if (event.x in ((width / 2) - 400F)..((width / 2) - 100F) && event.y in ((height / 2) + 500F)..((height / 2) + 800F)) {
+                } else if (event.x in ((width / 2) - 300F)..((width / 2) - 100F) && event.y in ((height / 2) + 300F)..((height / 2) + 500F)) {
                     booking(6)
-                } else if (event.x in ((width / 2) + 100F)..((width / 2) + 400F) && event.y in ((height / 2) + 500F)..((height / 2) + 800F)) {
+                } else if (event.x in ((width / 2) + 100F)..((width / 2) + 300F) && event.y in ((height / 2) + 300F)..((height / 2) + 500F)) {
                     booking(7)
                 }
             }

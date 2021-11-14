@@ -9,19 +9,17 @@ import android.view.MotionEvent.ACTION_DOWN
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 
-
-
-
 class SeatsView : View {
+
     private val backgroundPaint = Paint()
     private val armrestPaint = Paint()
     private val bottomSeatPaint = Paint()
     private val mBounds = Rect()
     private val numberSeatPaint = Paint(Paint.FAKE_BOLD_TEXT_FLAG)
     private val titlePaint = Paint(Paint.FAKE_BOLD_TEXT_FLAG)
+    private val seats: ArrayList<Seat> = arrayListOf()
 
     var seat: Seat? = null
-    private val seats: ArrayList<Seat> = arrayListOf()
 
     constructor(context: Context) : super(context)
 
@@ -33,6 +31,44 @@ class SeatsView : View {
         defStyleAttr
     )
 
+    init {
+        seats.apply {
+            add(Seat(id = 1, name = "A1", isBooked = false))
+            add(Seat(id = 2, name =  "A2", isBooked = false))
+            add(Seat(id = 3, name = "B1", isBooked = false))
+            add(Seat(id = 4, name = "B2", isBooked = false))
+            add(Seat(id = 5, name =  "C1", isBooked = false))
+            add(Seat(id = 6, name = "C2", isBooked = false))
+            add(Seat(id = 7, name = "D1", isBooked = false))
+            add(Seat(id = 8, name = "D2", isBooked = false))
+        }
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        val width = getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
+        val height = getDefaultSize(suggestedMinimumHeight, heightMeasureSpec)
+
+        val halfOfHeight = height / 2
+        val halfOfWidth = width / 2
+        var value = -600F
+
+        for (i in 0..7) {
+            if (i.mod(2) == 0) {
+                seats[i].apply {
+                    x = halfOfWidth - 300F
+                    y = halfOfHeight + value
+                }
+            } else {
+                seats[i].apply {
+                    x = halfOfWidth + 100F
+                    y = halfOfHeight + value
+                }
+                value += 300F
+            }
+        }
+    }
+    
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
@@ -47,26 +83,8 @@ class SeatsView : View {
         canvas?.drawText(text, (width / 2F) - 197F, 100F, titlePaint)
     }
 
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-
-        seats.apply {
-            add(Seat(1, (width / 2) - 300F, (height / 2) - 600F, "A1",false))
-            add(Seat(2, (width / 2) + 100F, (height / 2) - 600F, "A2",false))
-            add(Seat(3, (width / 2) - 300F, (height / 2) - 300F, "B1",false))
-            add(Seat(4, (width / 2) + 100F, (height / 2) - 300F, "B2",false))
-            add(Seat(5, (width / 2) - 300F, (height / 2) + 0F, "C1",false))
-            add(Seat(6, (width / 2) + 100F, (height / 2) + 0F, "C2",false))
-            add(Seat(7, (width / 2) - 300F, (height / 2) + 300F, "D1",false))
-            add(Seat(8, (width / 2) + 100F, (height / 2) + 300F, "D2",false))
-        }
-    }
-
     private fun drawSeat(canvas: Canvas?, seat: Seat) {
-        canvas?.save()
-
-        // Background
-        canvas?.translate(seat.x, seat.y)
+        // Mengatur Warna ketika Sudah Dibooking
         if (seat.isBooked) {
             backgroundPaint.color = ResourcesCompat.getColor(resources, R.color.grey_200, null)
             armrestPaint.color = ResourcesCompat.getColor(resources, R.color.grey_200, null)
@@ -79,6 +97,11 @@ class SeatsView : View {
             numberSeatPaint.color = ResourcesCompat.getColor(resources, R.color.grey_200, null)
         }
 
+        // Menyimpan State
+        canvas?.save()
+
+        // Background
+        canvas?.translate(seat.x as Float, seat.y as Float)
         val backgroundPath = Path()
         backgroundPath.addRect(0F, 0F, 200F, 200F, Path.Direction.CCW)
         backgroundPath.addCircle(100F, 50F, 75F, Path.Direction.CCW)
@@ -98,6 +121,7 @@ class SeatsView : View {
         bottomSeatPath.addRect(0F, 0F, 200F, 25F, Path.Direction.CCW)
         canvas?.drawPath(bottomSeatPath, bottomSeatPaint)
 
+        // Menulis Nomor Kursi
         canvas?.translate(0F, -175F)
         numberSeatPaint.apply {
             textSize = 50F
@@ -105,29 +129,40 @@ class SeatsView : View {
         }
         canvas?.drawText(seat.name, 100F - mBounds.centerX(), 100F, numberSeatPaint)
 
+        // Mengembalikan ke pengaturan sebelumnya
         canvas?.restore()
-
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
+        val halfOfHeight = height / 2
+        val halfOfWidth = width / 2
+
+        val widthColumnOne = (halfOfWidth - 300F)..(halfOfWidth - 100F)
+        val widthColumnTwo = (halfOfWidth + 100F)..(halfOfWidth + 300F)
+
+        val heightRowOne = (halfOfHeight - 600F)..(halfOfHeight - 400F)
+        val heightRowTwo = (halfOfHeight - 300F)..(halfOfHeight - 100F)
+        val heightRowTree = (halfOfHeight + 0F)..(halfOfHeight + 200F)
+        val heightRowFour =(halfOfHeight + 300F)..(halfOfHeight + 500F)
+
         when (event?.action) {
             ACTION_DOWN -> {
-                if (event.x in ((width / 2) - 300F)..((width / 2) - 100F) && event.y in ((height / 2) - 600F)..((height / 2) - 400F)) {
+                if (event.x in widthColumnOne && event.y in heightRowOne ){
                     booking(0)
-                } else if (event.x in ((width / 2) + 100F)..((width / 2) + 300F) && event.y in ((height / 2) - 600F)..((height / 2) - 400F)) {
+                } else if (event.x in widthColumnTwo && event.y in heightRowOne) {
                     booking(1)
-                } else if (event.x in ((width / 2) - 300F)..((width / 2) - 100F) && event.y in ((height / 2) - 300F)..((height / 2) - 100F)) {
+                } else if (event.x in widthColumnOne && event.y in heightRowTwo) {
                     booking(2)
-                } else if (event.x in ((width / 2) + 100F)..((width / 2) + 300F) && event.y in ((height / 2) - 300F)..((height / 2) - 100F)) {
+                } else if (event.x in widthColumnTwo && event.y in heightRowTwo) {
                     booking(3)
-                } else if (event.x in ((width / 2) - 300F)..((width / 2) - 100F) && event.y in ((height / 2) + 0F)..((height / 2) + 200F)) {
+                } else if (event.x in widthColumnOne && event.y in heightRowTree) {
                     booking(4)
-                } else if (event.x in ((width / 2) + 100F)..((width / 2) + 300F) && event.y in ((height / 2) + 0F)..((height / 2) + 200F)) {
+                } else if (event.x in widthColumnTwo && event.y in heightRowTree) {
                     booking(5)
-                } else if (event.x in ((width / 2) - 300F)..((width / 2) - 100F) && event.y in ((height / 2) + 300F)..((height / 2) + 500F)) {
+                } else if (event.x in widthColumnOne && event.y in heightRowFour) {
                     booking(6)
-                } else if (event.x in ((width / 2) + 100F)..((width / 2) + 300F) && event.y in ((height / 2) + 300F)..((height / 2) + 500F)) {
+                } else if (event.x in widthColumnTwo && event.y in heightRowFour) {
                     booking(7)
                 }
             }
@@ -150,8 +185,8 @@ class SeatsView : View {
 
 data class Seat(
     val id: Int,
-    val x: Float,
-    val y: Float,
+    var x: Float? = 0F,
+    var y: Float? = 0F,
     var name: String,
     var isBooked: Boolean
 )

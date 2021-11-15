@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         binding.like.setOnClickListener {
             showEars()
             showFace()
-            showLip(true)
+            showMount(true)
             showEyes()
             showNoise()
             showHair()
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         binding.dislike.setOnClickListener {
             showEars()
             showFace()
-            showLip(false)
+            showMount(false)
             showEyes()
             showNoise()
             showHair()
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         mCanvas.drawCircle(halfOfWidth + 80F, halfOfHeight - 20F, 15F, mPaint)
     }
 
-    private fun showLip(isHappy: Boolean) {
+    private fun showMount(isHappy: Boolean) {
         when (isHappy) {
             true -> {
                 mPaint.color = ResourcesCompat.getColor(resources, R.color.black, null)

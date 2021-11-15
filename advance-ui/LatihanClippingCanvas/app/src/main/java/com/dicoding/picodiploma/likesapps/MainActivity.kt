@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             showFace()
             showMount(true)
             showEyes()
-            showNoise()
+            showNose()
             showHair()
         }
 
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             showFace()
             showMount(false)
             showEyes()
-            showNoise()
+            showNose()
             showHair()
         }
 
@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         mCanvas.drawText(message, x, y, mPaintText)
     }
 
-    private fun showNoise() {
+    private fun showNose() {
         mPaint.color = ResourcesCompat.getColor(resources, R.color.black, null)
         mCanvas.drawCircle(halfOfWidth - 40F, halfOfHeight + 140F, 15F, mPaint)
         mCanvas.drawCircle(halfOfWidth + 40F, halfOfHeight + 140F, 15F, mPaint)

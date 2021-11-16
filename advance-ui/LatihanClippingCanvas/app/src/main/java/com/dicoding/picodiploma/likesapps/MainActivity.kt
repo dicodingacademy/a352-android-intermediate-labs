@@ -36,18 +36,18 @@ class MainActivity : AppCompatActivity() {
         binding.like.setOnClickListener {
             showEars()
             showFace()
-            showLip(true)
+            showMount(true)
             showEyes()
-            showNoise()
+            showNose()
             showHair()
         }
 
         binding.dislike.setOnClickListener {
             showEars()
             showFace()
-            showLip(false)
+            showMount(false)
             showEyes()
-            showNoise()
+            showNose()
             showHair()
         }
 
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         mCanvas.drawCircle(halfOfWidth + 80F, halfOfHeight - 20F, 15F, mPaint)
     }
 
-    private fun showLip(isHappy: Boolean) {
+    private fun showMount(isHappy: Boolean) {
         when (isHappy) {
             true -> {
                 mPaint.color = ResourcesCompat.getColor(resources, R.color.black, null)
@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         mCanvas.drawText(message, x, y, mPaintText)
     }
 
-    private fun showNoise() {
+    private fun showNose() {
         mPaint.color = ResourcesCompat.getColor(resources, R.color.black, null)
         mCanvas.drawCircle(halfOfWidth - 40F, halfOfHeight + 140F, 15F, mPaint)
         mCanvas.drawCircle(halfOfWidth + 40F, halfOfHeight + 140F, 15F, mPaint)

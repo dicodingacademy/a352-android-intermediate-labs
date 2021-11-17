@@ -1,0 +1,22 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "title": "Submission Android Expert",
+      "description": "Membuat aplikasi katalog game",
+      "date": "2021/12/02 20:12:21"
+    },
+    {
+      "id": 2,
+      "title": "Submission Android Fundamental",
+      "description": "Resolve issue halaman detail",
+      "date": "2021/12/12 20:12:12"
+    },
+    {
+      "id": 3,
+      "title": "Submission iOS",
+      "description": "Menambahkan module Android untuk multiplatform",
+      "date": "2021/11/21 20:12:21"
+    }
+  ]
+}

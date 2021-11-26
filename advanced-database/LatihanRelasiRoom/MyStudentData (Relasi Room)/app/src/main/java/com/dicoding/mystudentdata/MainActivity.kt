@@ -1,11 +1,13 @@
 package com.dicoding.mystudentdata
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dicoding.mystudentdata.adapter.StudentAndUniversityAdapter
 import com.dicoding.mystudentdata.adapter.StudentListAdapter
 import com.dicoding.mystudentdata.databinding.ActivityMainBinding
 
@@ -64,7 +66,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getStudentAndUniversity() {
-        
+        val adapter = StudentAndUniversityAdapter()
+        binding.rvStudent.adapter = adapter
+        mainViewModel.getAllStudentAndUniversity().observe(this, {
+            Log.d(TAG, "getStudentAndUniversity: $it")
+            adapter.submitList(it)
+        })
     }
 
     private fun getUniversityAndStudent() {
@@ -74,6 +81,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun getStudentWithCourse() {
 
+    }
+
+    companion object {
+        private const val TAG = "MainActivity"
     }
 
 }

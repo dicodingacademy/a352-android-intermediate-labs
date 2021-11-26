@@ -23,3 +23,14 @@ data class Course(
     val courseId: Int,
     val name: String,
 )
+
+data class StudentAndUniversity(
+    @Embedded
+    val student: Student,
+
+    @Relation(
+        parentColumn = "univId",
+        entityColumn = "universityId"
+    )
+    val university: University? = null
+)

@@ -14,6 +14,7 @@ class MainViewModel(private val studentDao: StudentDao) : ViewModel() {
     }
 
     fun getAllStudent(): LiveData<List<Student>> = studentDao.getAllStudent()
+    fun getAllStudentAndUniversity(): LiveData<List<StudentAndUniversity>> = studentDao.getAllStudentAndUniversity()
 
     private fun insertAllData() = viewModelScope.launch {
         studentDao.insertStudent(InitialDataSource.getStudents())

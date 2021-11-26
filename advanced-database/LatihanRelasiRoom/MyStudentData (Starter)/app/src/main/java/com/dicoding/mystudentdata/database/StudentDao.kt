@@ -14,7 +14,6 @@ interface StudentDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCourse(course: List<Course>)
 
-    @Transaction
     @Query("SELECT * from student")
     fun getAllStudent(): LiveData<List<Student>>
 

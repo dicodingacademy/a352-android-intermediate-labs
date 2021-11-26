@@ -20,4 +20,8 @@ interface StudentDao {
     @Transaction
     @Query("SELECT * from student")
     fun getAllStudentAndUniversity(): LiveData<List<StudentAndUniversity>>
+
+    @Transaction
+    @Query("SELECT * from university")
+    fun getAllUniversityAndStudent(): LiveData<List<UniversityAndStudent>>
 }

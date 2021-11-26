@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_single_table"
+        android:title="@string/single_table" />
+
+    <item
+        android:id="@+id/action_many_to_one"
+        android:title="@string/many_to_one" />
+
+    <item
+        android:id="@+id/action_one_to_many"
+        android:title="@string/one_to_many" />
+
+    <item
+        android:id="@+id/action_many_to_many"
+        android:title="@string/many_to_many" />
+</menu>

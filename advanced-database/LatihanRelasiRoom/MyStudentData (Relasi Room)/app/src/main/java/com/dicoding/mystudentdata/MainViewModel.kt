@@ -4,10 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.dicoding.mystudentdata.database.Student
-import com.dicoding.mystudentdata.database.StudentAndUniversity
-import com.dicoding.mystudentdata.database.StudentDao
-import com.dicoding.mystudentdata.database.UniversityAndStudent
+import com.dicoding.mystudentdata.database.*
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val studentDao: StudentDao) : ViewModel() {
@@ -19,11 +16,13 @@ class MainViewModel(private val studentDao: StudentDao) : ViewModel() {
     fun getAllStudent(): LiveData<List<Student>> = studentDao.getAllStudent()
     fun getAllStudentAndUniversity(): LiveData<List<StudentAndUniversity>> = studentDao.getAllStudentAndUniversity()
     fun getAllUniversityAndStudent(): LiveData<List<UniversityAndStudent>> = studentDao.getAllUniversityAndStudent()
+    fun getAllStudentWithCourse(): LiveData<List<StudentWithCourse>> = studentDao.getAllStudentWithCourse()
 
     private fun insertAllData() = viewModelScope.launch {
         studentDao.insertStudent(InitialDataSource.getStudents())
         studentDao.insertUniversity(InitialDataSource.getUniversities())
         studentDao.insertCourse(InitialDataSource.getCourses())
+        studentDao.insertCourseStudentCrossRef(InitialDataSource.getCourseStudentRelation())
     }
 }
 

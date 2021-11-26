@@ -1,9 +1,6 @@
 package com.dicoding.mystudentdata.database
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.Relation
+import androidx.room.*
 
 @Entity
 data class Student(
@@ -47,4 +44,28 @@ data class UniversityAndStudent(
         entityColumn = "univId"
     )
     val student: List<Student>
+)
+
+@Entity(primaryKeys = ["sId", "cId"])
+data class CourseStudentCrossRef(
+    val sId: Int,
+    @ColumnInfo(index = true)
+    val cId: Int,
+)
+
+data class StudentWithCourse(
+    @Embedded
+    val student: Student,
+
+    @Relation(
+        parentColumn = "studentId",
+        entity = Course::class,
+        entityColumn = "courseId",
+        associateBy = Junction(
+            value = CourseStudentCrossRef::class,
+            parentColumn = "sId",
+            entityColumn = "cId"
+        )
+    )
+    val course: List<Course>
 )

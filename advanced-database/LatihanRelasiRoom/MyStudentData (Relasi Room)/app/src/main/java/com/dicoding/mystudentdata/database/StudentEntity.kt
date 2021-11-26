@@ -55,7 +55,7 @@ data class CourseStudentCrossRef(
 
 data class StudentWithCourse(
     @Embedded
-    val student: Student,
+    val studentAndUniversity: StudentAndUniversity,
 
     @Relation(
         parentColumn = "studentId",

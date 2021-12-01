@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">My Student Data</string>
+    <string name="single_table">Single Table</string>
+    <string name="many_to_one">Many to One</string>
+    <string name="one_to_many">One to Many</string>
+    <string name="many_to_many">Many to Many</string>
+</resources>

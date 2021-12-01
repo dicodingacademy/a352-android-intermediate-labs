@@ -1,27 +1,25 @@
 package com.dicoding.mystudentdata.database
 
 import android.content.Context
-import androidx.lifecycle.viewModelScope
-import androidx.room.AutoMigration
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import androidx.room.*
+import androidx.room.migration.AutoMigrationSpec
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.dicoding.mystudentdata.InitialDataSource
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
 
 @Database(
     entities = [Student::class, University::class, Course::class, CourseStudentCrossRef::class],
-    version = 1,
+    version = 2,
     autoMigrations = [
-        AutoMigration(from = 1, to = 2),
+        AutoMigration(from = 1, to = 2, spec = StudentDatabase.MyAutoMigration::class),
     ],
     exportSchema = true
 )
 abstract class StudentDatabase : RoomDatabase() {
+
+    @RenameColumn(tableName = "University", fromColumnName = "name", toColumnName = "universityName")
+    class MyAutoMigration : AutoMigrationSpec
 
     abstract fun studentDao(): StudentDao
 

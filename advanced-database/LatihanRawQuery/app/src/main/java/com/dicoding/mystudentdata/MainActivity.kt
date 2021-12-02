@@ -71,6 +71,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showSortingOptionMenu(isShow: Boolean) {
+        val view = findViewById<View>(R.id.action_sort) ?: return
+        view.visibility = if (isShow) View.VISIBLE else View.GONE
+    }
+
     private fun showSortingPopUpMenu() {
         val view = findViewById<View>(R.id.action_sort) ?: return
         PopupMenu(this, view).run {
@@ -89,12 +94,7 @@ class MainActivity : AppCompatActivity() {
             show()
         }
     }
-
-    private fun showSortingOptionMenu(isShow: Boolean) {
-        val view = findViewById<View>(R.id.action_sort) ?: return
-        view.visibility = if (isShow) View.VISIBLE else View.GONE
-    }
-
+    
     private fun getStudent() {
         val adapter = StudentListAdapter()
         binding.rvStudent.adapter = adapter

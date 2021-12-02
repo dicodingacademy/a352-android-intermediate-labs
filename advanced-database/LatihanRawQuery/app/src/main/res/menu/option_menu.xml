@@ -21,6 +21,6 @@
     <item
         android:id="@+id/action_sort"
         android:icon="@drawable/ic_sort"
-        android:title="@string/many_to_many"
+        android:title="@string/sort"
         app:showAsAction="ifRoom" />
 </menu>

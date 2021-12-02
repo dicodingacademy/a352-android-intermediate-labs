@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             R.id.action_sort -> {
-                showSortingPopUpMenu()
+                showSortingPopupMenu()
                 true
             }
 
@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         view.visibility = if (isShow) View.VISIBLE else View.GONE
     }
 
-    private fun showSortingPopUpMenu() {
+    private fun showSortingPopupMenu() {
         val view = findViewById<View>(R.id.action_sort) ?: return
         PopupMenu(this, view).run {
             menuInflater.inflate(R.menu.sorting_menu, menu)

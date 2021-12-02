@@ -1,25 +1,18 @@
 package com.dicoding.mystudentdata.database
 
 import android.content.Context
-import androidx.lifecycle.viewModelScope
-import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.dicoding.mystudentdata.InitialDataSource
+import com.dicoding.mystudentdata.helper.InitialDataSource
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import java.util.concurrent.Executors
 
 @Database(
     entities = [Student::class, University::class, Course::class, CourseStudentCrossRef::class],
     version = 1,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2),
-    ],
-    exportSchema = true
+    exportSchema = false
 )
 abstract class StudentDatabase : RoomDatabase() {
 

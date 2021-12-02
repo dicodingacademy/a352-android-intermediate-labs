@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
             menuInflater.inflate(R.menu.sorting_menu, menu)
 
             setOnMenuItemClickListener {
-                mainViewModel.filter(
+                mainViewModel.changeSortType(
                     when (it.itemId) {
                         R.id.action_ascending -> SortType.ASCENDING
                         R.id.action_descending -> SortType.DESCENDING
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
             show()
         }
     }
-    
+
     private fun getStudent() {
         val adapter = StudentListAdapter()
         binding.rvStudent.adapter = adapter

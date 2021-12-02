@@ -8,17 +8,17 @@ import com.dicoding.mystudentdata.database.UniversityAndStudent
 import com.dicoding.mystudentdata.helper.SortType
 
 class MainViewModel(private val studentRepository: StudentRepository) : ViewModel() {
-    private val _filter = MutableLiveData<SortType>()
+    private val _sort = MutableLiveData<SortType>()
 
     init {
-        _filter.value = SortType.ASCENDING
+        _sort.value = SortType.ASCENDING
     }
 
-    fun filter(sortType: SortType) {
-        _filter.value = sortType
+    fun changeSortType(sortType: SortType) {
+        _sort.value = sortType
     }
 
-    fun getAllStudent(): LiveData<List<Student>> = _filter.switchMap {
+    fun getAllStudent(): LiveData<List<Student>> = _sort.switchMap {
         studentRepository.getAllStudent(it)
     }
     fun getAllStudentAndUniversity(): LiveData<List<StudentAndUniversity>> = studentRepository.getAllStudentAndUniversity()

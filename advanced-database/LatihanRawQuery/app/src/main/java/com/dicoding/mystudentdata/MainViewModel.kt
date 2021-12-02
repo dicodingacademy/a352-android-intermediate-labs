@@ -1,14 +1,24 @@
 package com.dicoding.mystudentdata
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.dicoding.mystudentdata.database.*
-import kotlinx.coroutines.launch
+import com.dicoding.mystudentdata.helper.SortType
+import com.dicoding.mystudentdata.helper.SortUtils
 
 class MainViewModel(private val studentDao: StudentDao) : ViewModel() {
-    fun getAllStudent(): LiveData<List<Student>> = studentDao.getAllStudent()
+    private val _filter = MutableLiveData<SortType>()
+
+    init {
+        _filter.value = SortType.ASCENDING
+    }
+
+    fun filter(sortType: SortType) {
+        _filter.value = sortType
+    }
+
+    fun getAllStudent(): LiveData<List<Student>> = _filter.switchMap {
+        studentDao.getAllStudent(SortUtils.getSortedQuery(it))
+    }
     fun getAllStudentAndUniversity(): LiveData<List<StudentAndUniversity>> = studentDao.getAllStudentAndUniversity()
     fun getAllUniversityAndStudent(): LiveData<List<UniversityAndStudent>> = studentDao.getAllUniversityAndStudent()
     fun getAllStudentWithCourse(): LiveData<List<StudentWithCourse>> = studentDao.getAllStudentWithCourse()

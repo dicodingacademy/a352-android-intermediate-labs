@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val mainViewModel: MainViewModel by viewModels {
-        ViewModelFactory((application as MyApplication).database.studentDao())
+        ViewModelFactory((application as MyApplication).repository)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

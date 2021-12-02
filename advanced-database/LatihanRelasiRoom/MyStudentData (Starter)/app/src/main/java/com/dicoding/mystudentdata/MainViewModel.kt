@@ -5,28 +5,27 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.dicoding.mystudentdata.database.*
+import com.dicoding.mystudentdata.helper.InitialDataSource
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val studentDao: StudentDao) : ViewModel() {
+class MainViewModel(private val studentRepository: StudentRepository) : ViewModel() {
 
     init {
         insertAllData()
     }
 
-    fun getAllStudent(): LiveData<List<Student>> = studentDao.getAllStudent()
+    fun getAllStudent(): LiveData<List<Student>> = studentRepository.getAllStudent()
 
     private fun insertAllData() = viewModelScope.launch {
-        studentDao.insertStudent(InitialDataSource.getStudents())
-        studentDao.insertUniversity(InitialDataSource.getUniversities())
-        studentDao.insertCourse(InitialDataSource.getCourses())
+        studentRepository.insertAllData()
     }
 }
 
-class ViewModelFactory(private val dao: StudentDao) : ViewModelProvider.Factory {
+class ViewModelFactory(private val repository: StudentRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MainViewModel(dao) as T
+            return MainViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

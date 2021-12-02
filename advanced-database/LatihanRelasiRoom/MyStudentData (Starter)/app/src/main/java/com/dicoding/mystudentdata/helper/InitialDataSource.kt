@@ -1,4 +1,4 @@
-package com.dicoding.mystudentdata
+package com.dicoding.mystudentdata.helper
 
 import com.dicoding.mystudentdata.database.Course
 import com.dicoding.mystudentdata.database.Student

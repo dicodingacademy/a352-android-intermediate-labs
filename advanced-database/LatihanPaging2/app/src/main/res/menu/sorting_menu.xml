@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_ascending"
+        android:title="@string/ascending" />
+
+    <item
+        android:id="@+id/action_descending"
+        android:title="@string/descending" />
+
+    <item
+        android:id="@+id/action_random"
+        android:title="@string/random" />
+</menu>

@@ -228,4 +228,15 @@
         app:layout_constraintStart_toEndOf="@+id/ratingTextView"
         app:layout_constraintTop_toTopOf="@+id/ratingImageView" />
 
+    <ImageView
+        android:id="@+id/settingImageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:padding="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_settings_24" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

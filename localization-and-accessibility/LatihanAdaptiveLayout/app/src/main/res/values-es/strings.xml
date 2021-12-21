@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Detalle del producto</string>
+    <string name="description">Zapatillas de running geniales de edición limitada. Usar estos zapatos mejorará su comprensión al aprender el código.\n\nEl artículo siempre está en stock. Hay varios tamaños y colores disponibles. ¡Ordenar ahora!</string>
+    <string name="buy">¡Compra Ahora!</string>
+    <string name="size">42</string>
+    <string name="rating">4,5 (1.249)</string>
+    <string name="color">Marrón</string>
+    <string name="date">Subido el 5 de agosto de 2021</string>
+    <string name="store">Tienda Dicoding</string>
+    <string name="name">Zapatos para correr</string>
+    <string name="price">€ 12,38</string>
+</resources>

@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Product Detail</string>
+    <string name="buy">Buy Now!</string>
+
+    <string name="name">Running Shoes</string>
+    <string name="store">Dicoding Store</string>
+    <string name="size">42</string>
+    <string name="color">Brown</string>
+    <string name="description">Limited edition cool running shoes. Wearing these shoes will improve your understanding when learning the code. Item is always in stock. Various sizes and colors are available. Order now!</string>
+
+    <string name="price">200000.00</string>
+    <string name="rating">4.5</string>
+    <string name="date">5/8/2021</string>
+    <string name="countRating">1249</string>
+
+    <string name="dateFormat">Uploaded on %1$s</string>
+    <string name="ratingFormat">%1$s (%2$s)</string>
+</resources>

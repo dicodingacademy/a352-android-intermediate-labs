@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Detailipun Produk</string>
+    <string name="buy">Tumbasen Sak Niki!</string>
+
+    <string name="name">Sepatu Damel Playon</string>
+    <string name="store">Warung Dicoding</string>
+    <string name="size">42</string>
+    <string name="color">Soklat</string>
+    <string name="description">Sepatu damel playon edisi namung kedik. Yen ngagem sepatu niki saget ningkataken pemahaman panjenengan nalika sinau coding.\n\nBarang mesti wonten. Sepatu punika wonten ing katah ukuran lan warna. Monggo dipun pesen!</string>
+
+    <string name="price">200000.00</string>
+    <string name="rating">4.5</string>
+    <string name="date">5/8/2021</string>
+    <string name="countRating">1249</string>
+
+    <string name="dateFormat">Dipasang %1$s</string>
+    <string name="ratingFormat">%1$s (%2$s)</string>
+
+</resources>

@@ -1,6 +1,7 @@
 package com.dicoding.picodiploma.productdetail.helper
 
 import java.text.DateFormat
+import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,4 +37,23 @@ fun String.withCurrencyFormat(): String {
     }
 
     return mCurrencyFormat.format(priceOnDollar)
+}
+
+fun String.toCurrencyValue(): String {
+    val rupiahExchangeRate  = 12495.95
+    val euroExchangeRate = 0.88
+
+    var priceOnDollar = this.toDouble() / rupiahExchangeRate
+
+    val deviceLocale = Locale.getDefault().country
+    when {
+        deviceLocale.equals("ES") -> {
+            priceOnDollar *= euroExchangeRate
+        }
+        deviceLocale.equals("ID") -> {
+            priceOnDollar *= rupiahExchangeRate
+        }
+    }
+
+    return priceOnDollar.toString()
 }

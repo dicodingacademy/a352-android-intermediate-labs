@@ -16,4 +16,7 @@
     <string name="dateFormat">Dipasang %1$s</string>
     <string name="ratingFormat">%1$s (%2$s)</string>
 
+    <string name="setting">Ganti Boso</string>
+    <string name="previewProduct">"Gambar Sepatu regane %1$s Rupiah"</string>
+
 </resources>

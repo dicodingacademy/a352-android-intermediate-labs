@@ -16,4 +16,7 @@
     <string name="dateFormat">Diunggah pada %1$s</string>
     <string name="ratingFormat">%1$s (%2$s)</string>
 
+    <string name="setting">Ganti Bahasa</string>
+    <string name="previewProduct">"Gambar Sepatu seharga %1$s Rupiah"</string>
+
 </resources>

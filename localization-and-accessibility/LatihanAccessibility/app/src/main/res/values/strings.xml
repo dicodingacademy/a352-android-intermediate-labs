@@ -15,4 +15,8 @@
 
     <string name="dateFormat">Uploaded on %1$s</string>
     <string name="ratingFormat">%1$s (%2$s)</string>
+
+    <string name="setting">Change language</string>
+    <string name="previewProduct">"Picture of Shoes for %1$s Dollars"</string>
+
 </resources>

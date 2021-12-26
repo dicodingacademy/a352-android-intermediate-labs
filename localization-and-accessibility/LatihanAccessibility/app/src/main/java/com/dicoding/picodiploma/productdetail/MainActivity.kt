@@ -8,6 +8,7 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.dicoding.picodiploma.productdetail.databinding.ActivityMainBinding
+import com.dicoding.picodiploma.productdetail.helper.toCurrencyValue
 import com.dicoding.picodiploma.productdetail.helper.withCurrencyFormat
 import com.dicoding.picodiploma.productdetail.helper.withDateFormat
 import com.dicoding.picodiploma.productdetail.helper.withNumberingFormat
@@ -42,6 +43,8 @@ class MainActivity : AppCompatActivity() {
             )
         }
         supportActionBar?.hide()
+
+        binding.settingImageView.contentDescription = getString(R.string.setting)
     }
 
     private fun setupData() {
@@ -50,7 +53,6 @@ class MainActivity : AppCompatActivity() {
 
         product.apply {
             binding.apply {
-                previewImageView.setImageResource(image)
                 nameTextView.text = name
                 storeTextView.text = store
                 colorTextView.text = color
@@ -59,6 +61,9 @@ class MainActivity : AppCompatActivity() {
                 priceTextView.text = price.withCurrencyFormat()
                 dateTextView.text = getString(R.string.dateFormat, date.withDateFormat())
                 ratingTextView.text = getString(R.string.ratingFormat, rating.withNumberingFormat(), countRating.withNumberingFormat())
+
+                previewImageView.setImageResource(image)
+                previewImageView.contentDescription = getString(R.string.previewProduct, price.toCurrencyValue().withNumberingFormat())
             }
         }
     }

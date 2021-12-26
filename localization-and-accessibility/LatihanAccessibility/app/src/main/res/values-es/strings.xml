@@ -16,4 +16,8 @@
 
     <string name="dateFormat">Subido el %1$s</string>
     <string name="ratingFormat">%1$s (%2$s)</string>
+
+    <string name="setting">Cambiar idioma</string>
+    <string name="previewProduct">"Imagen de zapatos para %1$s euros"</string>
+
 </resources>

@@ -16,7 +16,11 @@
     <string name="dateFormat">Uploaded on %1$s</string>
     <string name="ratingFormat">%1$s (%2$s)</string>
 
-    <string name="setting">Change language</string>
-    <string name="previewProduct">"Picture of Shoes for %1$s Dollars"</string>
-
+    <string name="settingDescription">Change language</string>
+    <string name="previewDescription">"Picture of Shoes"</string>
+    <string name="priceDescription">"%1$s Dollars"</string>
+    <string name="storeDescription">From %1$s</string>
+    <string name="sizeDescription">The size is  %1$s</string>
+    <string name="colorDescription">The color is %1$s</string>
+    <string name="ratingDescription">Got a rating of %1$s from %2$s</string>
 </resources>

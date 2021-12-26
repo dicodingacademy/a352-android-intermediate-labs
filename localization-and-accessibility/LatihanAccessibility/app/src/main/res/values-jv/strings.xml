@@ -16,7 +16,11 @@
     <string name="dateFormat">Dipasang %1$s</string>
     <string name="ratingFormat">%1$s (%2$s)</string>
 
-    <string name="setting">Ganti Boso</string>
-    <string name="previewProduct">"Gambar Sepatu regane %1$s Rupiah"</string>
-
+    <string name="settingDescription">Ganti Boso</string>
+    <string name="previewDescription">"Gambar Sepatu"</string>
+    <string name="priceDescription">"%1$s Rupiah"</string>
+    <string name="storeDescription">Seko %1$s</string>
+    <string name="sizeDescription">Ukuranipun  %1$s</string>
+    <string name="colorDescription">Warnanipun %1$s</string>
+    <string name="ratingDescription">Gadah peringkat %1$s saking %2$s</string>
 </resources>

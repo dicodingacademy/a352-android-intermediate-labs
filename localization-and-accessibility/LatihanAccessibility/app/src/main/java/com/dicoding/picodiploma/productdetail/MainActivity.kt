@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dicoding.picodiploma.productdetail.databinding.ActivityMainBinding
 import com.dicoding.picodiploma.productdetail.helper.toCurrencyValue
@@ -44,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         }
         supportActionBar?.hide()
 
-        binding.settingImageView.contentDescription = getString(R.string.setting)
     }
 
     private fun setupData() {
@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         product.apply {
             binding.apply {
+                previewImageView.setImageResource(image)
                 nameTextView.text = name
                 storeTextView.text = store
                 colorTextView.text = color
@@ -60,10 +61,30 @@ class MainActivity : AppCompatActivity() {
                 descTextView.text = desc
                 priceTextView.text = price.withCurrencyFormat()
                 dateTextView.text = getString(R.string.dateFormat, date.withDateFormat())
-                ratingTextView.text = getString(R.string.ratingFormat, rating.withNumberingFormat(), countRating.withNumberingFormat())
+                ratingTextView.text = getString(
+                    R.string.ratingFormat,
+                    rating.withNumberingFormat(),
+                    countRating.withNumberingFormat()
+                )
+            }
+        }
+        setupAccessibility(product)
+    }
 
-                previewImageView.setImageResource(image)
-                previewImageView.contentDescription = getString(R.string.previewProduct, price.toCurrencyValue().withNumberingFormat())
+    private fun setupAccessibility(productModel: ProductModel) {
+        productModel.apply {
+            binding.apply {
+                settingImageView.contentDescription = getString(R.string.settingDescription)
+                previewImageView.contentDescription = getString(R.string.previewDescription)
+                priceTextView.contentDescription = getString(R.string.priceDescription, price.toCurrencyValue())
+                colorTextView.contentDescription = getString(R.string.colorDescription, color)
+                sizeTextView.contentDescription = getString(R.string.sizeDescription, size)
+                ratingTextView.contentDescription = getString(
+                    R.string.ratingDescription,
+                    rating.withNumberingFormat(),
+                    countRating.withNumberingFormat()
+                )
+                storeTextView.contentDescription = getString(R.string.storeDescription, store)
             }
         }
     }

@@ -6,6 +6,9 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+private const val rupiahExchangeRate  = 12495.95
+private const val euroExchangeRate = 0.88
+
 fun String.withNumberingFormat(): String {
     return NumberFormat.getNumberInstance().format(this.toDouble())
 }
@@ -17,8 +20,6 @@ fun String.withDateFormat(): String {
 }
 
 fun String.withCurrencyFormat(): String {
-    val rupiahExchangeRate  = 12495.95
-    val euroExchangeRate = 0.88
 
     var priceOnDollar = this.toDouble() / rupiahExchangeRate
 
@@ -40,11 +41,7 @@ fun String.withCurrencyFormat(): String {
 }
 
 fun String.toCurrencyValue(): String {
-    val rupiahExchangeRate  = 12495.95
-    val euroExchangeRate = 0.88
-
     var priceOnDollar = this.toDouble() / rupiahExchangeRate
-
     val deviceLocale = Locale.getDefault().country
     when {
         deviceLocale.equals("ES") -> {
@@ -55,5 +52,5 @@ fun String.toCurrencyValue(): String {
         }
     }
 
-    return priceOnDollar.toString()
+    return DecimalFormat("#,###.##").format(priceOnDollar)
 }

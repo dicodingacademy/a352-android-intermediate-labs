@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dicoding.picodiploma.productdetail.databinding.ActivityMainBinding
-import com.dicoding.picodiploma.productdetail.helper.toCurrencyValue
 import com.dicoding.picodiploma.productdetail.helper.withCurrencyFormat
 import com.dicoding.picodiploma.productdetail.helper.withDateFormat
 import com.dicoding.picodiploma.productdetail.helper.withNumberingFormat
@@ -76,7 +74,6 @@ class MainActivity : AppCompatActivity() {
             binding.apply {
                 settingImageView.contentDescription = getString(R.string.settingDescription)
                 previewImageView.contentDescription = getString(R.string.previewDescription)
-                priceTextView.contentDescription = getString(R.string.priceDescription, price.toCurrencyValue())
                 colorTextView.contentDescription = getString(R.string.colorDescription, color)
                 sizeTextView.contentDescription = getString(R.string.sizeDescription, size)
                 ratingTextView.contentDescription = getString(

@@ -39,18 +39,3 @@ fun String.withCurrencyFormat(): String {
 
     return mCurrencyFormat.format(priceOnDollar)
 }
-
-fun String.toCurrencyValue(): String {
-    var priceOnDollar = this.toDouble() / rupiahExchangeRate
-    val deviceLocale = Locale.getDefault().country
-    when {
-        deviceLocale.equals("ES") -> {
-            priceOnDollar *= euroExchangeRate
-        }
-        deviceLocale.equals("ID") -> {
-            priceOnDollar *= rupiahExchangeRate
-        }
-    }
-
-    return DecimalFormat("#,###.##").format(priceOnDollar)
-}

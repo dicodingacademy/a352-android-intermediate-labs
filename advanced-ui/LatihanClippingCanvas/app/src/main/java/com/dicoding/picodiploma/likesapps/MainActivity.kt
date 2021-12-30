@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     private val right = mBitmap.width - left
     private val bottom = mBitmap.height.toFloat() - 50F
 
-    private val message = "Apakah kamu suka Dicoding?"
+    private val message = "Apakah kamu suka bermain?"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         binding.like.setOnClickListener {
             showEars()
             showFace()
-            showMount(true)
+            showMouth(true)
             showEyes()
             showNose()
             showHair()
@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         binding.dislike.setOnClickListener {
             showEars()
             showFace()
-            showMount(false)
+            showMouth(false)
             showEyes()
             showNose()
             showHair()
@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         mCanvas.drawCircle(halfOfWidth + 80F, halfOfHeight - 20F, 15F, mPaint)
     }
 
-    private fun showMount(isHappy: Boolean) {
+    private fun showMouth(isHappy: Boolean) {
         when (isHappy) {
             true -> {
                 mPaint.color = ResourcesCompat.getColor(resources, R.color.black, null)

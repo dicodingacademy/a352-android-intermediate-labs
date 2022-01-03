@@ -33,9 +33,9 @@ class ListHeroAdapter(private val listHero: ArrayList<Hero>) : RecyclerView.Adap
     override fun getItemCount(): Int = listHero.size
 
     class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imgPhoto: ImageView = itemView.findViewById(R.id.profileImageView)
-        var tvName: TextView = itemView.findViewById(R.id.nameTextView)
-        var tvDescription: TextView = itemView.findViewById(R.id.descTextView)
+        private var imgPhoto: ImageView = itemView.findViewById(R.id.profileImageView)
+        private var tvName: TextView = itemView.findViewById(R.id.nameTextView)
+        private var tvDescription: TextView = itemView.findViewById(R.id.descTextView)
 
         fun bind(hero: Hero) {
             Glide.with(itemView.context)

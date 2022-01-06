@@ -48,15 +48,7 @@ class ListHeroAdapter(private val listHero: ArrayList<Hero>) : RecyclerView.Adap
             itemView.setOnClickListener {
                 val intent = Intent(itemView.context, HeroActivity::class.java)
                 intent.putExtra("Hero", hero)
-
-                val optionsCompat: ActivityOptionsCompat =
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        itemView.context as Activity,
-                        Pair(imgPhoto, "profile"),
-                        Pair(tvName, "name"),
-                        Pair(tvDescription, "description"),
-                    )
-                itemView.context.startActivity(intent, optionsCompat.toBundle())
+                itemView.context.startActivity(intent)
             }
         }
     }

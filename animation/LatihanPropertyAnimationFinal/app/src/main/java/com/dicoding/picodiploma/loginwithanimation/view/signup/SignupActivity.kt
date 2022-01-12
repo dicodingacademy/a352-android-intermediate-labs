@@ -79,7 +79,6 @@ class SignupActivity : AppCompatActivity() {
                         setMessage("Akunnya sudah jadi nih. Yuk, login dan belajar coding.")
                         setPositiveButton("Lanjut") { _, _ ->
                             finish()
-                            overridePendingTransition(R.anim.no_animation, R.anim.slide_down)
                         }
                         create()
                         show()
@@ -119,11 +118,5 @@ class SignupActivity : AppCompatActivity() {
             )
             startDelay = 500
         }.start()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-        overridePendingTransition(R.anim.no_animation, R.anim.slide_down)
     }
 }

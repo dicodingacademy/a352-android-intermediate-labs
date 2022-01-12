@@ -91,7 +91,6 @@ class LoginActivity : AppCompatActivity() {
                             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
                             startActivity(intent)
                             finish()
-                            overridePendingTransition(R.anim.slide_up, R.anim.no_animation)
                         }
                         create()
                         show()
@@ -122,9 +121,4 @@ class LoginActivity : AppCompatActivity() {
         }.start()
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
-        overridePendingTransition(R.anim.no_animation, R.anim.slide_down)
-    }
 }

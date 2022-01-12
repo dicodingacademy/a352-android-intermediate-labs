@@ -43,12 +43,10 @@ class WelcomeActivity : AppCompatActivity() {
     private fun setupAction() {
         binding.loginButton.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
-            overridePendingTransition(R.anim.slide_up, R.anim.no_animation)
         }
 
         binding.signupButton.setOnClickListener {
             startActivity(Intent(this, SignupActivity::class.java))
-            overridePendingTransition(R.anim.slide_up, R.anim.no_animation)
         }
     }
 

@@ -7,7 +7,6 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
-import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.*
 import android.util.Log
@@ -21,15 +20,17 @@ import java.lang.ref.WeakReference
  */
 
 class MediaService : Service(), MediaPlayerCallback {
-    private val TAG = MediaService::class.java.simpleName
     private var isReady: Boolean = false
     private var mMediaPlayer: MediaPlayer? = null
 
     companion object {
         const val ACTION_CREATE = "com.dicoding.picodiploma.mysound.mediaservice.create"
         const val ACTION_DESTROY = "com.dicoding.picodiploma.mysound.mediaservice.destroy"
+        const val TAG = "MediaService"
         const val PLAY = 0
         const val STOP = 1
+        const val CHANNEL_DEFAULT_IMPORTANCE = "Channel_Test"
+        const val ONGOING_NOTIFICATION_ID = 1
     }
 
     /*
@@ -107,13 +108,13 @@ class MediaService : Service(), MediaPlayerCallback {
         /**
          * Called when MediaPlayer is ready
          */
-        mMediaPlayer?.setOnPreparedListener(){
+        mMediaPlayer?.setOnPreparedListener {
             isReady = true
             mMediaPlayer?.start()
             showNotif()
         }
 
-        mMediaPlayer?.setOnErrorListener { mp, what, extra ->
+        mMediaPlayer?.setOnErrorListener { _, _, _ ->
             /**
              * Called when MediaPlayer is error
              */
@@ -152,9 +153,6 @@ class MediaService : Service(), MediaPlayerCallback {
      * Digunakan ketika media service berjalan, maka akan muncul notif
      */
     private fun showNotif() {
-        val CHANNEL_DEFAULT_IMPORTANCE = "Channel_Test"
-        val ONGOING_NOTIFICATION_ID = 1
-
         val notificationIntent = Intent(this, MainActivity::class.java)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
 
@@ -206,9 +204,7 @@ class MediaService : Service(), MediaPlayerCallback {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
                 PLAY -> mediaPlayerCallbackWeakReference.get()?.onPlay()
-
                 STOP -> mediaPlayerCallbackWeakReference.get()?.onStop()
-
                 else -> super.handleMessage(msg)
             }
         }

@@ -11,7 +11,11 @@ import androidx.appcompat.app.AppCompatActivity
 
 
 class MainActivity : AppCompatActivity() {
-    private val TAG = MainActivity::class.java.simpleName
+
+    companion object {
+        const val TAG = "MainActivity"
+    }
+
     private var mService: Messenger? = null
 
     private lateinit var mBoundServiceIntent: Intent

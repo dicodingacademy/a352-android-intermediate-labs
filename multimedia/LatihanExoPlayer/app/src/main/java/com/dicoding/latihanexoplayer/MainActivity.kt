@@ -35,7 +35,6 @@ class MainActivity : AppCompatActivity() {
 
     public override fun onResume() {
         super.onResume()
-        hideSystemUi()
         if (Util.SDK_INT <= 23 || player == null) {
             initializePlayer()
         }
@@ -79,14 +78,5 @@ class MainActivity : AppCompatActivity() {
             release()
         }
         player = null
-    }
-
-    private fun hideSystemUi() {
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        WindowInsetsControllerCompat(window, viewBinding.videoView).let { controller ->
-            controller.hide(WindowInsetsCompat.Type.systemBars())
-            controller.systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
     }
 }

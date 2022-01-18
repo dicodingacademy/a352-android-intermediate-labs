@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val btnSound = findViewById<Button>(R.id.btn_soundpool)
+        val btnSound = findViewById<Button>(R.id.btn_sound_pool)
 
         sp = SoundPool.Builder()
                 .setMaxStreams(10)

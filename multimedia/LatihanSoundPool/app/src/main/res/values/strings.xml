@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">MySound</string>
     <string name="btn_text_play">Play</string>
-    <string name="text_soudpool">Test Soundpool</string>
+    <string name="text_sound_pool">Test Sound Pool</string>
 </resources>

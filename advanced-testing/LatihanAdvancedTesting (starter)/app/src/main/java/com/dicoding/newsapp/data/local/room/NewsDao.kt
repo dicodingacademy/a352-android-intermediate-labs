@@ -9,11 +9,17 @@ interface NewsDao {
     @Query("SELECT * FROM news ORDER BY publishedAt DESC")
     fun getNews(): LiveData<List<NewsEntity>>
 
-    @Query("SELECT * FROM news where bookmarked = 1")
+    @Query("SELECT * FROM news")
     fun getBookmarkedNews(): LiveData<List<NewsEntity>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertNews(news: List<NewsEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun saveNews(news: NewsEntity)
+
+    @Query("DELETE FROM news WHERE title = :newsTitle")
+    suspend fun deleteNews(newsTitle: String)
 
     @Update
     suspend fun updateNews(news: NewsEntity)
@@ -21,6 +27,6 @@ interface NewsDao {
     @Query("DELETE FROM news WHERE bookmarked = 0")
     suspend fun deleteAll()
 
-    @Query("SELECT EXISTS(SELECT * FROM news WHERE title = :title AND bookmarked = 1)")
-    suspend fun isNewsBookmarked(title: String): Boolean
+    @Query("SELECT EXISTS(SELECT * FROM news WHERE title = :title)")
+    fun isNewsBookmarked(title: String): LiveData<Boolean>
 }

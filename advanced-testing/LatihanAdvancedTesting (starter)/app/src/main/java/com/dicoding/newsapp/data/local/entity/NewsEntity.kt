@@ -1,9 +1,12 @@
 package com.dicoding.newsapp.data.local.entity
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "news")
 class NewsEntity(
     @field:ColumnInfo(name = "title")
@@ -21,4 +24,4 @@ class NewsEntity(
 
     @field:ColumnInfo(name = "bookmarked")
     var isBookmarked: Boolean
-)
+) : Parcelable

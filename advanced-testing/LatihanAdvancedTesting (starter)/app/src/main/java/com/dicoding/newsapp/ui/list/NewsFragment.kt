@@ -1,5 +1,6 @@
-package com.dicoding.newsapp.ui
+package com.dicoding.newsapp.ui.list
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,8 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.newsapp.data.Result
 import com.dicoding.newsapp.databinding.FragmentNewsBinding
+import com.dicoding.newsapp.ui.ViewModelFactory
+import com.dicoding.newsapp.ui.detail.NewsDetailActivity
 
 class NewsFragment : Fragment() {
 
@@ -33,11 +36,9 @@ class NewsFragment : Fragment() {
         }
 
         val newsAdapter = NewsAdapter { news ->
-            if (news.isBookmarked){
-                viewModel.deleteNews(news)
-            } else {
-                viewModel.saveNews(news)
-            }
+            val intent = Intent(activity, NewsDetailActivity::class.java)
+            intent.putExtra(NewsDetailActivity.NEWS_DATA, news)
+            startActivity(intent)
         }
 
         if (tabName == TAB_NEWS) {

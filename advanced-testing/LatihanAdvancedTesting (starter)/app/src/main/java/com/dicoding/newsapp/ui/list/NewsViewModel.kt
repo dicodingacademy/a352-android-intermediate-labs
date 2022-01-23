@@ -1,4 +1,4 @@
-package com.dicoding.newsapp.ui
+package com.dicoding.newsapp.ui.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,16 +10,4 @@ class NewsViewModel(private val newsRepository: NewsRepository) : ViewModel() {
     fun getHeadlineNews() = newsRepository.getHeadlineNews()
 
     fun getBookmarkedNews() = newsRepository.getBookmarkedNews()
-
-    fun saveNews(news: NewsEntity) {
-        viewModelScope.launch {
-            newsRepository.setNewsBookmark(news, true)
-        }
-    }
-
-    fun deleteNews(news: NewsEntity) {
-        viewModelScope.launch {
-            newsRepository.setNewsBookmark(news, false)
-        }
-    }
 }

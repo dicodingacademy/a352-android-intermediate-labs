@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.newsapp.data.NewsRepository
 import com.dicoding.newsapp.di.Injection
+import com.dicoding.newsapp.ui.detail.NewsDetailViewModel
+import com.dicoding.newsapp.ui.list.NewsViewModel
 
 class ViewModelFactory private constructor(private val newsRepository: NewsRepository) :
     ViewModelProvider.NewInstanceFactory() {
@@ -12,6 +14,8 @@ class ViewModelFactory private constructor(private val newsRepository: NewsRepos
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NewsViewModel::class.java)) {
             return NewsViewModel(newsRepository) as T
+        } else if (modelClass.isAssignableFrom(NewsDetailViewModel::class.java)) {
+            return NewsDetailViewModel(newsRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     }

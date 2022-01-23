@@ -1,4 +1,4 @@
-package com.dicoding.newsapp.ui
+package com.dicoding.newsapp.ui.list
 
 import android.os.Bundle
 import androidx.annotation.StringRes

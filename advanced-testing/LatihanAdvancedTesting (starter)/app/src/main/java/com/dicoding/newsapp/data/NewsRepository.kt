@@ -22,8 +22,7 @@ class NewsRepository private constructor(
                     article.title,
                     article.publishedAt,
                     article.urlToImage,
-                    article.url,
-                    false
+                    article.url
                 )
             }
             emit(Result.Success(newsList))
@@ -35,11 +34,6 @@ class NewsRepository private constructor(
 
     fun getBookmarkedNews(): LiveData<List<NewsEntity>> {
         return newsDao.getBookmarkedNews()
-    }
-
-    suspend fun setNewsBookmark(news: NewsEntity, bookmarkState: Boolean) {
-        news.isBookmarked = bookmarkState
-        newsDao.updateNews(news)
     }
 
     suspend fun saveNews(news: NewsEntity) {

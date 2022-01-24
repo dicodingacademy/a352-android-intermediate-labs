@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dicoding.newsapp.R
 import com.dicoding.newsapp.data.Result
 import com.dicoding.newsapp.databinding.FragmentNewsBinding
 import com.dicoding.newsapp.ui.ViewModelFactory
@@ -21,7 +22,11 @@ class NewsFragment : Fragment() {
     private var _binding: FragmentNewsBinding? = null
     private val binding get() = _binding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentNewsBinding.inflate(layoutInflater, container, false)
         return binding?.root
     }
@@ -55,11 +60,8 @@ class NewsFragment : Fragment() {
                         }
                         is Result.Error -> {
                             binding?.progressBar?.visibility = View.GONE
-                            Toast.makeText(
-                                context,
-                                "Terjadi kesalahan" + result.error,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            binding?.viewError?.root?.visibility = View.VISIBLE
+                            binding?.viewError?.tvError?.text = getString(R.string.something_wrong)
                         }
                     }
                 }
@@ -67,7 +69,13 @@ class NewsFragment : Fragment() {
         } else if (tabName == TAB_BOOKMARK) {
             viewModel.getBookmarkedNews().observe(viewLifecycleOwner, { bookmarkedNews ->
                 binding?.progressBar?.visibility = View.GONE
-                newsAdapter.submitList(bookmarkedNews)
+                if (bookmarkedNews.isNotEmpty()) {
+                    newsAdapter.submitList(bookmarkedNews)
+                    binding?.viewError?.root?.visibility = View.GONE
+                } else {
+                    binding?.viewError?.root?.visibility = View.VISIBLE
+                    binding?.viewError?.tvError?.text = getString(R.string.no_data)
+                }
             })
         }
 

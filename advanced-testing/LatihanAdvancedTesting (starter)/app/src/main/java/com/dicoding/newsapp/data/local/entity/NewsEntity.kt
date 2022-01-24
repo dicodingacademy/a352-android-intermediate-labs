@@ -20,8 +20,5 @@ class NewsEntity(
     val urlToImage: String? = null,
 
     @field:ColumnInfo(name = "url")
-    val url: String? = null,
-
-    @field:ColumnInfo(name = "bookmarked")
-    var isBookmarked: Boolean
+    val url: String? = null
 ) : Parcelable

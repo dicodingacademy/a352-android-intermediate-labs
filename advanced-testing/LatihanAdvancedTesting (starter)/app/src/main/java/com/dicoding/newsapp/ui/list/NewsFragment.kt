@@ -68,14 +68,11 @@ class NewsFragment : Fragment() {
             })
         } else if (tabName == TAB_BOOKMARK) {
             viewModel.getBookmarkedNews().observe(viewLifecycleOwner, { bookmarkedNews ->
+                newsAdapter.submitList(bookmarkedNews)
                 binding?.progressBar?.visibility = View.GONE
-                if (bookmarkedNews.isNotEmpty()) {
-                    newsAdapter.submitList(bookmarkedNews)
-                    binding?.viewError?.root?.visibility = View.GONE
-                } else {
-                    binding?.viewError?.root?.visibility = View.VISIBLE
-                    binding?.viewError?.tvError?.text = getString(R.string.no_data)
-                }
+                binding?.viewError?.tvError?.text = getString(R.string.no_data)
+                binding?.viewError?.root?.visibility =
+                    if (bookmarkedNews.isNotEmpty()) View.GONE else View.VISIBLE
             })
         }
 

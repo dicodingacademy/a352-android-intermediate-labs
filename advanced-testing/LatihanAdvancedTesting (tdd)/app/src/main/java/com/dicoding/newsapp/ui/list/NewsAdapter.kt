@@ -12,6 +12,8 @@ import com.dicoding.newsapp.R
 import com.dicoding.newsapp.data.local.entity.NewsEntity
 import com.dicoding.newsapp.databinding.ItemNewsBinding
 import com.dicoding.newsapp.ui.list.NewsAdapter.MyViewHolder
+import com.dicoding.newsapp.utils.DateFormatter
+import java.util.*
 
 class NewsAdapter(private val onItemClick: (NewsEntity) -> Unit) : ListAdapter<NewsEntity, MyViewHolder>(
     DIFF_CALLBACK
@@ -32,7 +34,7 @@ class NewsAdapter(private val onItemClick: (NewsEntity) -> Unit) : ListAdapter<N
     ) {
         fun bind(news: NewsEntity) {
             binding.tvItemTitle.text = news.title
-            binding.tvItemPublishedDate.text = news.publishedAt
+            binding.tvItemPublishedDate.text = DateFormatter.formatDate(news.publishedAt, TimeZone.getDefault().id)
             Glide.with(itemView.context)
                 .load(news.urlToImage)
                 .apply(

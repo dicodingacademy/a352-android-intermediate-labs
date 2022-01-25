@@ -30,8 +30,8 @@ class MainActivity : AppCompatActivity() {
     private var player: ExoPlayer? = null
 
     private fun initializePlayer() {
-        val mediaItem = MediaItem.fromUri(MainActivity.URL_VIDEO_DICODING)
-        val anotherMediaItem = MediaItem.fromUri(MainActivity.URL_AUDIO)
+        val mediaItem = MediaItem.fromUri(URL_VIDEO_DICODING)
+        val anotherMediaItem = MediaItem.fromUri(URL_AUDIO)
 
         player = ExoPlayer.Builder(this).build().also { exoPlayer ->
             viewBinding.videoView.player = exoPlayer

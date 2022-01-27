@@ -4,35 +4,32 @@ import android.Manifest
 import android.content.Intent
 import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
 import android.graphics.Matrix
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
-import com.google.gson.JsonObject
-import okhttp3.*
 import java.text.SimpleDateFormat
 import java.util.*
-import android.os.Environment
-import android.content.ContentUris
 import android.content.ContentResolver
-import android.content.Context
 
-import androidx.annotation.NonNull
-import androidx.annotation.Nullable
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.*
+import okhttp3.RequestBody.Companion.asRequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {
@@ -44,6 +41,28 @@ class MainActivity : AppCompatActivity() {
 
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val REQUEST_CODE_PERMISSIONS = 10
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (!allPermissionsGranted()) {
+                Toast.makeText(
+                    this,
+                    "Tidak mendapatkan permission.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
+            }
+        }
+    }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +92,11 @@ class MainActivity : AppCompatActivity() {
             intent.type = "image/*"
             val chooser = Intent.createChooser(intent, "Choose a Picture")
             launcherIntentGallery.launch(chooser)
-
+        }
+        binding.uploadButton.setOnClickListener {
+            run {
+                uploadImage()
+            }
         }
     }
 
@@ -123,30 +146,9 @@ class MainActivity : AppCompatActivity() {
         if (it.resultCode == RESULT_OK) {
             val imageBitmap = it.data?.extras?.get("data") as Bitmap
 
-            val mediaDir = externalMediaDirs.firstOrNull()?.let { file ->
-                File(file, resources.getString(R.string.app_name)).apply { mkdirs() }
-            }
+            val photoFile = createFile()
 
-            val outputDirectory = if (
-                mediaDir != null && mediaDir.exists()
-            ) mediaDir else filesDir
-
-            val photoFile = File(
-                outputDirectory,
-                SimpleDateFormat(
-                    CameraActivity.FILENAME_FORMAT,
-                    Locale.US
-                ).format(System.currentTimeMillis()) + ".jpg"
-            ).apply { createNewFile() }
-
-            val bos = ByteArrayOutputStream()
-            imageBitmap.compress(CompressFormat.PNG, 0, bos)
-
-            FileOutputStream(photoFile).apply {
-                write(bos.toByteArray())
-                flush()
-                close()
-            }
+            imageBitmap.compress(CompressFormat.JPEG, 100, FileOutputStream(photoFile))
 
             getFile = photoFile
 
@@ -162,7 +164,7 @@ class MainActivity : AppCompatActivity() {
             val selectedImg: Uri = it.data?.data as Uri
 
             val contentResolver: ContentResolver = contentResolver
-            val filePath: String = applicationInfo.dataDir.toString() + File.separator + "temp_file"
+            val filePath: String = applicationInfo.dataDir.toString() + File.separator + "temp_file.jpg"
             val file = File(filePath)
 
             val inputStream = contentResolver.openInputStream(selectedImg) as InputStream
@@ -179,32 +181,63 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (!allPermissionsGranted()) {
-                Toast.makeText(
-                    this,
-                    "Tidak mendapatkan permission.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                finish()
-            }
-        }
-    }
-
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
-    }
-
     private fun uploadImage() {
         if (getFile != null) {
+            val file = reduceFileImage(getFile as File)
 
+            val description = "Ini adalah deksripsi gambar".toRequestBody("text/plain".toMediaType())
+            val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+            val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+                "photo",
+                file.name,
+                requestImageFile
+            )
+
+            val service = ApiConfig().getApiService().uploadImage(imageMultipart, description)
+
+            service.enqueue(object : Callback<FileUploadResponse> {
+                override fun onResponse(
+                    call: Call<FileUploadResponse>,
+                    response: Response<FileUploadResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val responseBody = response.body()
+                        if (responseBody != null && !responseBody.error) {
+                           Toast.makeText(this@MainActivity, "Berhasil upload", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this@MainActivity, "Gagal upload", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                override fun onFailure(call: Call<FileUploadResponse>, t: Throwable) {
+                    Toast.makeText(this@MainActivity, "Gagal instance Retrofit", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
+    }
+
+    private fun reduceFileImage(file: File): File {
+        val bitmap = BitmapFactory.decodeFile(file.path)
+        bitmap.compress(CompressFormat.JPEG, 80, FileOutputStream(file))
+        return file
+    }
+
+    private fun createFile(): File {
+        val mediaDir = externalMediaDirs.firstOrNull()?.let { file ->
+            File(file, resources.getString(R.string.app_name)).apply { mkdirs() }
+        }
+
+        val outputDirectory = if (
+            mediaDir != null && mediaDir.exists()
+        ) mediaDir else filesDir
+
+        return File(
+            outputDirectory,
+            SimpleDateFormat(
+                CameraActivity.FILENAME_FORMAT,
+                Locale.US
+            ).format(System.currentTimeMillis()) + ".jpeg"
+        ).apply { createNewFile() }
     }
 
 }

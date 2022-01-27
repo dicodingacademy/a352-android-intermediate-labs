@@ -14,10 +14,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 interface ApiService {
     @Multipart
-    @POST("/stories/guest")
+    @POST("/v1/stories/guest")
     fun uploadImage(
-        @Part("photo") photo: MultipartBody.Part,
-        @Part("description") description: RequestBody
+        @Part file: MultipartBody.Part,
+        @Part("description") description: RequestBody,
     ): Call<FileUploadResponse>
 }
 
@@ -29,19 +29,17 @@ data class FileUploadResponse(
 )
 
 class ApiConfig {
-    companion object{
-        fun getApiService(): ApiService {
-            val loggingInterceptor =
-                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-            val client = OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
-                .build()
-            val retrofit = Retrofit.Builder()
-                .baseUrl("https://story-api.dicoding.dev/v1")
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build()
-            return retrofit.create(ApiService::class.java)
-        }
+    fun getApiService(): ApiService {
+        val loggingInterceptor =
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client = OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://story-api.dicoding.dev/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+        return retrofit.create(ApiService::class.java)
     }
 }

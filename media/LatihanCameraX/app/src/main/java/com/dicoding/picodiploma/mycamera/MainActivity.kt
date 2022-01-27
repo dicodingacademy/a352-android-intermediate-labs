@@ -21,14 +21,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
-import com.google.gson.JsonObject
-import okhttp3.*
 import java.text.SimpleDateFormat
 import java.util.*
 import android.os.Environment
 import android.content.ContentUris
 import android.content.ContentResolver
 import android.content.Context
+import android.telecom.Call
 
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
@@ -44,6 +43,28 @@ class MainActivity : AppCompatActivity() {
 
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val REQUEST_CODE_PERMISSIONS = 10
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_CODE_PERMISSIONS) {
+            if (!allPermissionsGranted()) {
+                Toast.makeText(
+                    this,
+                    "Tidak mendapatkan permission.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                finish()
+            }
+        }
+    }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +94,6 @@ class MainActivity : AppCompatActivity() {
             intent.type = "image/*"
             val chooser = Intent.createChooser(intent, "Choose a Picture")
             launcherIntentGallery.launch(chooser)
-
         }
     }
 
@@ -123,30 +143,9 @@ class MainActivity : AppCompatActivity() {
         if (it.resultCode == RESULT_OK) {
             val imageBitmap = it.data?.extras?.get("data") as Bitmap
 
-            val mediaDir = externalMediaDirs.firstOrNull()?.let { file ->
-                File(file, resources.getString(R.string.app_name)).apply { mkdirs() }
-            }
+            val photoFile = createFile()
 
-            val outputDirectory = if (
-                mediaDir != null && mediaDir.exists()
-            ) mediaDir else filesDir
-
-            val photoFile = File(
-                outputDirectory,
-                SimpleDateFormat(
-                    CameraActivity.FILENAME_FORMAT,
-                    Locale.US
-                ).format(System.currentTimeMillis()) + ".jpg"
-            ).apply { createNewFile() }
-
-            val bos = ByteArrayOutputStream()
-            imageBitmap.compress(CompressFormat.PNG, 0, bos)
-
-            FileOutputStream(photoFile).apply {
-                write(bos.toByteArray())
-                flush()
-                close()
-            }
+            imageBitmap.compress(CompressFormat.JPEG, 100, FileOutputStream(photoFile))
 
             getFile = photoFile
 
@@ -162,7 +161,7 @@ class MainActivity : AppCompatActivity() {
             val selectedImg: Uri = it.data?.data as Uri
 
             val contentResolver: ContentResolver = contentResolver
-            val filePath: String = applicationInfo.dataDir.toString() + File.separator + "temp_file"
+            val filePath: String = applicationInfo.dataDir.toString() + File.separator + "temp_file.jpg"
             val file = File(filePath)
 
             val inputStream = contentResolver.openInputStream(selectedImg) as InputStream
@@ -179,27 +178,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (!allPermissionsGranted()) {
-                Toast.makeText(
-                    this,
-                    "Tidak mendapatkan permission.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                finish()
-            }
+    private fun createFile(): File {
+        val mediaDir = externalMediaDirs.firstOrNull()?.let { file ->
+            File(file, resources.getString(R.string.app_name)).apply { mkdirs() }
         }
-    }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
-    }
+        val outputDirectory = if (
+            mediaDir != null && mediaDir.exists()
+        ) mediaDir else filesDir
 
+        return File(
+            outputDirectory,
+            SimpleDateFormat(
+                CameraActivity.FILENAME_FORMAT,
+                Locale.US
+            ).format(System.currentTimeMillis()) + ".jpeg"
+        ).apply { createNewFile() }
+    }
 
 }

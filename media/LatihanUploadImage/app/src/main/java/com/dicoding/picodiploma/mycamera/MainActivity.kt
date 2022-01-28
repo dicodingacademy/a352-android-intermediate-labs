@@ -17,8 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
-import java.text.SimpleDateFormat
-import java.util.*
+import androidx.core.content.FileProvider
 import android.content.ContentResolver
 
 import okhttp3.MediaType.Companion.toMediaType
@@ -84,7 +83,14 @@ class MainActivity : AppCompatActivity() {
         }
         binding.cameraButton.setOnClickListener {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            launcherIntentCamera.launch(intent)
+            intent.resolveActivity(packageManager)
+
+            createTempFile(application).also {
+                val photoURI: Uri = Uri.fromFile(it)
+                currentPhotoPath = it.absolutePath
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                launcherIntentCamera.launch(intent)
+            }
         }
         binding.galleryButton.setOnClickListener {
             val intent = Intent()
@@ -108,64 +114,40 @@ class MainActivity : AppCompatActivity() {
             val isBackCamera = it.data?.getBooleanExtra("isBackCamera", true) as Boolean
 
             getFile = myFile
-            val getBitmap = BitmapFactory.decodeFile(getFile?.path)
-
-            val matrix = Matrix()
-            val result: Bitmap = if (isBackCamera) {
-                matrix.postRotate(90f)
-                Bitmap.createBitmap(
-                    getBitmap,
-                    0,
-                    0,
-                    getBitmap.width,
-                    getBitmap.height,
-                    matrix,
-                    true
-                )
-            } else {
-                matrix.postRotate(-90f)
-                matrix.postScale(-1f, 1f, getBitmap.width / 2f, getBitmap.height / 2f)
-                Bitmap.createBitmap(
-                    getBitmap,
-                    0,
-                    0,
-                    getBitmap.width,
-                    getBitmap.height,
-                    matrix,
-                    true
-                )
-            }
+            val result = rotateBitmap(
+                BitmapFactory.decodeFile(getFile?.path),
+                isBackCamera
+            )
 
             binding.previewImageView.setImageBitmap(result)
         }
     }
 
+    private lateinit var currentPhotoPath: String
     private val launcherIntentCamera = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == RESULT_OK) {
-            val imageBitmap = it.data?.extras?.get("data") as Bitmap
+            val file = File(currentPhotoPath)
+            getFile = file
 
-            val photoFile = createFile()
+            val result = rotateBitmap(
+                BitmapFactory.decodeFile(getFile?.path),
+                true
+            )
 
-            imageBitmap.compress(CompressFormat.JPEG, 100, FileOutputStream(photoFile))
-
-            getFile = photoFile
-
-            val getBitmap = BitmapFactory.decodeFile(getFile?.path)
-            binding.previewImageView.setImageBitmap(getBitmap)
+            binding.previewImageView.setImageBitmap(result)
         }
     }
 
     private val launcherIntentGallery = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) { it ->
+    ) {
         if (it.resultCode == RESULT_OK) {
             val selectedImg: Uri = it.data?.data as Uri
 
             val contentResolver: ContentResolver = contentResolver
-            val filePath: String = applicationInfo.dataDir.toString() + File.separator + "temp_file.jpg"
-            val file = File(filePath)
+            val file = createTempFile(application)
 
             val inputStream = contentResolver.openInputStream(selectedImg) as InputStream
             val outputStream: OutputStream = FileOutputStream(file)
@@ -220,24 +202,6 @@ class MainActivity : AppCompatActivity() {
         val bitmap = BitmapFactory.decodeFile(file.path)
         bitmap.compress(CompressFormat.JPEG, 80, FileOutputStream(file))
         return file
-    }
-
-    private fun createFile(): File {
-        val mediaDir = externalMediaDirs.firstOrNull()?.let { file ->
-            File(file, resources.getString(R.string.app_name)).apply { mkdirs() }
-        }
-
-        val outputDirectory = if (
-            mediaDir != null && mediaDir.exists()
-        ) mediaDir else filesDir
-
-        return File(
-            outputDirectory,
-            SimpleDateFormat(
-                CameraActivity.FILENAME_FORMAT,
-                Locale.US
-            ).format(System.currentTimeMillis()) + ".jpeg"
-        ).apply { createNewFile() }
     }
 
 }

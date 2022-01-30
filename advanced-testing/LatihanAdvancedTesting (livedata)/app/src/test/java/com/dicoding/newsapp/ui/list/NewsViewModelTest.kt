@@ -53,9 +53,9 @@ class NewsViewModelTest {
         headlineNews.value = Result.Error("Error")
         `when`(newsViewModel.getHeadlineNews()).thenReturn(headlineNews)
 
-        val value = newsViewModel.getHeadlineNews().getOrAwaitValue()
+        val actualNews = newsViewModel.getHeadlineNews().getOrAwaitValue()
         Mockito.verify(newsRepository).getHeadlineNews()
-        Assert.assertNotNull(value)
-        Assert.assertTrue(value is Result.Error)
+        Assert.assertNotNull(actualNews)
+        Assert.assertTrue(actualNews is Result.Error)
     }
 }

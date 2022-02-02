@@ -9,7 +9,7 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-private const val FILENAME_FORMAT = "yyyy MMM dd, HH:mm:ss"
+private const val FILENAME_FORMAT = "dd-MMM-yyyy"
 
 val timeStamp: String = SimpleDateFormat(
     FILENAME_FORMAT,

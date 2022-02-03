@@ -2,11 +2,14 @@ package com.dicoding.newsapp.ui.list
 
 import android.os.Bundle
 import androidx.fragment.app.testing.launchFragmentInContainer
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.MediumTest
 import com.dicoding.newsapp.JsonConverter
 import com.dicoding.newsapp.R
 import com.dicoding.newsapp.data.remote.retrofit.ApiConfig
@@ -19,6 +22,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+@MediumTest
 class NewsFragmentTest {
 
     private val mockWebServer = MockWebServer()
@@ -52,6 +56,12 @@ class NewsFragmentTest {
 
         onView(withText("Inti Bumi Mendingin Lebih Cepat, Pertanda Apa? - detikInet"))
             .check(matches(isDisplayed()))
+        onView(withId(R.id.rv_news))
+            .perform(
+                RecyclerViewActions.scrollTo<RecyclerView.ViewHolder>(
+                    hasDescendant(withText("Perjalanan Luar Angkasa Sebabkan Anemia - CNN Indonesia"))
+                )
+            )
     }
 
     @Test

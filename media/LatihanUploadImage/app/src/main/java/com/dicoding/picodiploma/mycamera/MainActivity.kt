@@ -4,10 +4,8 @@ import android.Manifest
 import android.content.Intent
 import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -86,7 +84,11 @@ class MainActivity : AppCompatActivity() {
             intent.resolveActivity(packageManager)
 
             createTempFile(application).also {
-                val photoURI: Uri = Uri.fromFile(it)
+                val photoURI: Uri = FileProvider.getUriForFile(
+                    this@MainActivity,
+                    "com.dicoding.picodiploma.mycamera",
+                    it
+                )
                 currentPhotoPath = it.absolutePath
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                 launcherIntentCamera.launch(intent)
@@ -142,9 +144,9 @@ class MainActivity : AppCompatActivity() {
 
     private val launcherIntentGallery = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) {
-        if (it.resultCode == RESULT_OK) {
-            val selectedImg: Uri = it.data?.data as Uri
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val selectedImg: Uri = result.data?.data as Uri
 
             val contentResolver: ContentResolver = contentResolver
             val file = createTempFile(application)
@@ -200,8 +202,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun reduceFileImage(file: File): File {
         val bitmap = BitmapFactory.decodeFile(file.path)
-        bitmap.compress(CompressFormat.JPEG, 80, FileOutputStream(file))
+        val fileSize = file.length()
+        var qualityCompress = 80
+
+        when {
+            fileSize > 3145728 -> { // >3MB
+                qualityCompress = 55
+            }
+            fileSize > 2097152 -> { // >2MB
+                qualityCompress = 60
+            }
+            fileSize > 1560576 -> { // >1.5MB
+                qualityCompress = 65
+            }
+            fileSize > 1048576 -> { // >1MB
+                qualityCompress = 70
+            }
+        }
+
+        bitmap.compress(CompressFormat.JPEG, qualityCompress, FileOutputStream(file))
+
         return file
     }
-
 }

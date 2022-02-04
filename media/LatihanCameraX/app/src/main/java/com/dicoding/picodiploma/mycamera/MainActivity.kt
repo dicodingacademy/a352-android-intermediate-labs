@@ -2,37 +2,16 @@ package com.dicoding.picodiploma.mycamera
 
 import android.Manifest
 import android.content.Intent
-import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
-import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
-import android.graphics.Matrix
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
-import java.text.SimpleDateFormat
-import java.util.*
-import android.os.Environment
-import android.content.ContentUris
-import android.content.ContentResolver
-import android.content.Context
-import android.telecom.Call
-
-import androidx.annotation.NonNull
-import androidx.annotation.Nullable
 import java.io.*
-
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -85,15 +64,13 @@ class MainActivity : AppCompatActivity() {
             launcherIntentCameraX.launch(intent)
         }
         binding.cameraButton.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            launcherIntentCamera.launch(intent)
+            Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
         }
         binding.galleryButton.setOnClickListener {
-            val intent = Intent()
-            intent.action = ACTION_GET_CONTENT
-            intent.type = "image/*"
-            val chooser = Intent.createChooser(intent, "Choose a Picture")
-            launcherIntentGallery.launch(chooser)
+            Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
+        }
+        binding.uploadButton.setOnClickListener {
+            Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -105,95 +82,13 @@ class MainActivity : AppCompatActivity() {
             val isBackCamera = it.data?.getBooleanExtra("isBackCamera", true) as Boolean
 
             getFile = myFile
-            val getBitmap = BitmapFactory.decodeFile(getFile?.path)
-
-            val matrix = Matrix()
-            val result: Bitmap = if (isBackCamera) {
-                matrix.postRotate(90f)
-                Bitmap.createBitmap(
-                    getBitmap,
-                    0,
-                    0,
-                    getBitmap.width,
-                    getBitmap.height,
-                    matrix,
-                    true
-                )
-            } else {
-                matrix.postRotate(-90f)
-                matrix.postScale(-1f, 1f, getBitmap.width / 2f, getBitmap.height / 2f)
-                Bitmap.createBitmap(
-                    getBitmap,
-                    0,
-                    0,
-                    getBitmap.width,
-                    getBitmap.height,
-                    matrix,
-                    true
-                )
-            }
+            val result = rotateBitmap(
+                BitmapFactory.decodeFile(getFile?.path),
+                isBackCamera
+            )
 
             binding.previewImageView.setImageBitmap(result)
         }
-    }
-
-    private val launcherIntentCamera = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        if (it.resultCode == RESULT_OK) {
-            val imageBitmap = it.data?.extras?.get("data") as Bitmap
-
-            val photoFile = createFile()
-
-            imageBitmap.compress(CompressFormat.JPEG, 100, FileOutputStream(photoFile))
-
-            getFile = photoFile
-
-            val getBitmap = BitmapFactory.decodeFile(getFile?.path)
-            binding.previewImageView.setImageBitmap(getBitmap)
-        }
-    }
-
-    private val launcherIntentGallery = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { it ->
-        if (it.resultCode == RESULT_OK) {
-            val selectedImg: Uri = it.data?.data as Uri
-
-            val contentResolver: ContentResolver = contentResolver
-            val filePath: String = applicationInfo.dataDir.toString() + File.separator + "temp_file.jpg"
-            val file = File(filePath)
-
-            val inputStream = contentResolver.openInputStream(selectedImg) as InputStream
-            val outputStream: OutputStream = FileOutputStream(file)
-            val buf = ByteArray(1024)
-            var len: Int
-            while (inputStream.read(buf).also { len = it } > 0) outputStream.write(buf, 0, len)
-            outputStream.close()
-            inputStream.close()
-
-            getFile = file
-
-            binding.previewImageView.setImageURI(selectedImg)
-        }
-    }
-
-    private fun createFile(): File {
-        val mediaDir = externalMediaDirs.firstOrNull()?.let { file ->
-            File(file, resources.getString(R.string.app_name)).apply { mkdirs() }
-        }
-
-        val outputDirectory = if (
-            mediaDir != null && mediaDir.exists()
-        ) mediaDir else filesDir
-
-        return File(
-            outputDirectory,
-            SimpleDateFormat(
-                CameraActivity.FILENAME_FORMAT,
-                Locale.US
-            ).format(System.currentTimeMillis()) + ".jpeg"
-        ).apply { createNewFile() }
     }
 
 }

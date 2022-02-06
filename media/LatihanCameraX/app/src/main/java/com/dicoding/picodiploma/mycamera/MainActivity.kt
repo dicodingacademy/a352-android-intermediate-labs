@@ -15,7 +15,6 @@ import java.io.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private var getFile: File? = null
 
     companion object {
         const val CAMERA_X_RESULT = 200
@@ -81,9 +80,8 @@ class MainActivity : AppCompatActivity() {
             val myFile = it.data?.getSerializableExtra("picture") as File
             val isBackCamera = it.data?.getBooleanExtra("isBackCamera", true) as Boolean
 
-            getFile = myFile
             val result = rotateBitmap(
-                BitmapFactory.decodeFile(getFile?.path),
+                BitmapFactory.decodeFile(myFile.path),
                 isBackCamera
             )
 

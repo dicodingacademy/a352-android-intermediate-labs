@@ -20,7 +20,6 @@ import java.io.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private var getFile: File? = null
 
     companion object {
         const val CAMERA_X_RESULT = 200
@@ -102,9 +101,8 @@ class MainActivity : AppCompatActivity() {
             val myFile = it.data?.getSerializableExtra("picture") as File
             val isBackCamera = it.data?.getBooleanExtra("isBackCamera", true) as Boolean
 
-            getFile = myFile
             val result = rotateBitmap(
-                BitmapFactory.decodeFile(getFile?.path),
+                BitmapFactory.decodeFile(myFile.path),
                 isBackCamera
             )
 
@@ -117,13 +115,14 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == RESULT_OK) {
-            val file = File(currentPhotoPath)
-            getFile = file
+            val myFile = File(currentPhotoPath)
 
-            val result = rotateBitmap(
-                BitmapFactory.decodeFile(getFile?.path),
-                true
-            )
+            val result =  BitmapFactory.decodeFile(myFile.path)
+//            Silakan gunakan kode ini jika mengalami perubahan rotasi
+//            val result = rotateBitmap(
+//                BitmapFactory.decodeFile(myFile.path),
+//                true
+//            )
 
             binding.previewImageView.setImageBitmap(result)
         }
@@ -136,17 +135,15 @@ class MainActivity : AppCompatActivity() {
             val selectedImg: Uri = result.data?.data as Uri
 
             val contentResolver: ContentResolver = contentResolver
-            val file = createTempFile(application)
+            val myFile = createTempFile(application)
 
             val inputStream = contentResolver.openInputStream(selectedImg) as InputStream
-            val outputStream: OutputStream = FileOutputStream(file)
+            val outputStream: OutputStream = FileOutputStream(myFile)
             val buf = ByteArray(1024)
             var len: Int
             while (inputStream.read(buf).also { len = it } > 0) outputStream.write(buf, 0, len)
             outputStream.close()
             inputStream.close()
-
-            getFile = file
 
             binding.previewImageView.setImageURI(selectedImg)
         }

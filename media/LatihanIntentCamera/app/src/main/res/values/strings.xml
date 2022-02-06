@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MyCamera</string>
+    <string name="camera_x">CameraX</string>
+    <string name="camera">Kamera</string>
+    <string name="gallery">Galeri</string>
+    <string name="upload">Unggah</string>
+</resources>

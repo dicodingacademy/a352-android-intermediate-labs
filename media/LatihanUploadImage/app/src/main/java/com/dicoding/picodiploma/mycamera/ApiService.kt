@@ -12,6 +12,13 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+data class FileUploadResponse(
+    @field:SerializedName("error")
+    val error: Boolean,
+    @field:SerializedName("message")
+    val message: String
+)
+
 interface ApiService {
     @Multipart
     @POST("/v1/stories/guest")
@@ -20,13 +27,6 @@ interface ApiService {
         @Part("description") description: RequestBody,
     ): Call<FileUploadResponse>
 }
-
-data class FileUploadResponse(
-    @field:SerializedName("error")
-    val error: Boolean,
-    @field:SerializedName("message")
-    val message: String
-)
 
 class ApiConfig {
     fun getApiService(): ApiService {
@@ -43,3 +43,4 @@ class ApiConfig {
         return retrofit.create(ApiService::class.java)
     }
 }
+

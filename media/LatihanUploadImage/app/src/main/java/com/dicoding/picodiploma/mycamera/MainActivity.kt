@@ -206,7 +206,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun reduceFileImage(file: File): File {
         val bitmap = BitmapFactory.decodeFile(file.path)
-        val fileSize = file.length()
 
         var compressQuality = 100
         var streamLength: Int

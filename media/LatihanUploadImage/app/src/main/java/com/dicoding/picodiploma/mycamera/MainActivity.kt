@@ -207,24 +207,19 @@ class MainActivity : AppCompatActivity() {
     private fun reduceFileImage(file: File): File {
         val bitmap = BitmapFactory.decodeFile(file.path)
         val fileSize = file.length()
-        var qualityCompress = 80
 
-        when {
-            fileSize > 3145728 -> { // >3MB
-                qualityCompress = 55
-            }
-            fileSize > 2097152 -> { // >2MB
-                qualityCompress = 60
-            }
-            fileSize > 1560576 -> { // >1.5MB
-                qualityCompress = 65
-            }
-            fileSize > 1048576 -> { // >1MB
-                qualityCompress = 70
-            }
-        }
+        var compressQuality = 100
+        var streamLength: Int
 
-        bitmap.compress(CompressFormat.JPEG, qualityCompress, FileOutputStream(file))
+        do {
+            val bmpStream = ByteArrayOutputStream()
+            bitmap.compress(CompressFormat.JPEG, compressQuality, bmpStream)
+            val bmpPicByteArray = bmpStream.toByteArray()
+            streamLength = bmpPicByteArray.size
+            compressQuality -= 5
+        } while (streamLength > 1000000)
+
+        bitmap.compress(CompressFormat.JPEG, compressQuality, FileOutputStream(file))
 
         return file
     }

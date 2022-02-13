@@ -133,18 +133,7 @@ class MainActivity : AppCompatActivity() {
     ) { result ->
         if (result.resultCode == RESULT_OK) {
             val selectedImg: Uri = result.data?.data as Uri
-
-            val contentResolver: ContentResolver = contentResolver
-            val myFile = createTempFile(application)
-
-            val inputStream = contentResolver.openInputStream(selectedImg) as InputStream
-            val outputStream: OutputStream = FileOutputStream(myFile)
-            val buf = ByteArray(1024)
-            var len: Int
-            while (inputStream.read(buf).also { len = it } > 0) outputStream.write(buf, 0, len)
-            outputStream.close()
-            inputStream.close()
-
+            val myFile = uriToFile(selectedImg, this@MainActivity)
             binding.previewImageView.setImageURI(selectedImg)
         }
     }

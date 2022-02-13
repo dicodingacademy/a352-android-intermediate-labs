@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
-import android.graphics.Bitmap.CompressFormat
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -14,19 +13,18 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
 import androidx.core.content.FileProvider
-import android.content.ContentResolver
-
+import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.*
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -101,9 +99,7 @@ class MainActivity : AppCompatActivity() {
             launcherIntentGallery.launch(chooser)
         }
         binding.uploadButton.setOnClickListener {
-            run {
-                uploadImage()
-            }
+            uploadImage()
         }
     }
 
@@ -150,16 +146,7 @@ class MainActivity : AppCompatActivity() {
         if (result.resultCode == RESULT_OK) {
             val selectedImg: Uri = result.data?.data as Uri
 
-            val contentResolver: ContentResolver = contentResolver
-            val myFile = createTempFile(application)
-
-            val inputStream = contentResolver.openInputStream(selectedImg) as InputStream
-            val outputStream: OutputStream = FileOutputStream(myFile)
-            val buf = ByteArray(1024)
-            var len: Int
-            while (inputStream.read(buf).also { len = it } > 0) outputStream.write(buf, 0, len)
-            outputStream.close()
-            inputStream.close()
+            val myFile = uriToFile(selectedImg, this@MainActivity)
 
             getFile = myFile
 
@@ -204,22 +191,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun reduceFileImage(file: File): File {
-        val bitmap = BitmapFactory.decodeFile(file.path)
-
-        var compressQuality = 100
-        var streamLength: Int
-
-        do {
-            val bmpStream = ByteArrayOutputStream()
-            bitmap.compress(CompressFormat.JPEG, compressQuality, bmpStream)
-            val bmpPicByteArray = bmpStream.toByteArray()
-            streamLength = bmpPicByteArray.size
-            compressQuality -= 5
-        } while (streamLength > 1000000)
-
-        bitmap.compress(CompressFormat.JPEG, compressQuality, FileOutputStream(file))
-
-        return file
-    }
 }

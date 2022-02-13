@@ -41,13 +41,6 @@ class MainActivity : AppCompatActivity() {
             startService(mStartServiceIntent)
         }
 
-        val btnStartJobIntentService = findViewById<Button>(R.id.btn_start_job_intent_service)
-        btnStartJobIntentService.setOnClickListener {
-            val mStartIntentService = Intent(this, MyJobIntentService::class.java)
-            mStartIntentService.putExtra(MyJobIntentService.EXTRA_DURATION, 5000L)
-            MyJobIntentService.enqueueWork(this, mStartIntentService)
-        }
-
         val btnStartBoundService = findViewById<Button>(R.id.btn_start_bound_service)
         btnStartBoundService.setOnClickListener { 
             val mBoundServiceIntent = Intent(this, MyBoundService::class.java)

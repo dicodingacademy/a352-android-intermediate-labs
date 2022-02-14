@@ -176,10 +176,10 @@ class MainActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val responseBody = response.body()
                         if (responseBody != null && !responseBody.error) {
-                           Toast.makeText(this@MainActivity, "Berhasil upload", Toast.LENGTH_SHORT).show()
+                           Toast.makeText(this@MainActivity, responseBody.message, Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(this@MainActivity, "Gagal upload", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, response.message(), Toast.LENGTH_SHORT).show()
                     }
                 }
                 override fun onFailure(call: Call<FileUploadResponse>, t: Throwable) {

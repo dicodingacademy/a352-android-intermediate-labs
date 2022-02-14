@@ -38,7 +38,7 @@ class MyBoundService : Service() {
     /*
     Method yang akan dipanggil ketika service diikatkan ke activity
      */
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent): IBinder {
         Log.d(TAG, "onBind: ")
         mTimer.start()
         return mBinder

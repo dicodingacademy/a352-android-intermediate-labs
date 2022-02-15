@@ -11,7 +11,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyStackWidget"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,7 +20,8 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".ImagesBannerWidget">
+        <receiver android:name=".ImagesBannerWidget"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

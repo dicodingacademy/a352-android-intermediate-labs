@@ -14,7 +14,7 @@ import android.widget.RemoteViews
 class RandomNumbersWidget : AppWidgetProvider() {
 
     companion object {
-        private const val WIDGET_CLICK = "widgetsclick"
+        private const val WIDGET_CLICK = "android.appwidget.action.APPWIDGET_UPDATE"
         private const val WIDGET_ID_EXTRA = "widget_id_extra"
     }
 
@@ -54,17 +54,16 @@ class RandomNumbersWidget : AppWidgetProvider() {
     }
 
     private fun getPendingSelfIntent(context: Context, appWidgetId: Int, action: String): PendingIntent {
-        val intent = Intent(context, javaClass)
+        val intent = Intent(context, RandomNumbersWidget::class.java)
         intent.action = action
         intent.putExtra(WIDGET_ID_EXTRA, appWidgetId)
-        return PendingIntent.getActivity(
-            context,
-            appWidgetId,
-            intent,
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
-            else 0
-        )
+         return  PendingIntent.getBroadcast(context, appWidgetId, intent,
+             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+             } else {
+                 0
+             }
+         )
     }
 }
 

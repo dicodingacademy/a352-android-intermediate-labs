@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">My Firebase Chat</string>
+    <string name="sign_out">Sign Out</string>
+</resources>

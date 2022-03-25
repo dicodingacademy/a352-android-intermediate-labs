@@ -31,7 +31,7 @@ import com.google.android.gms.maps.model.MapStyleOptions
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
-    private lateinit var map: GoogleMap
+    private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,41 +46,39 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        map = googleMap
-        map.mapType = GoogleMap.MAP_TYPE_NORMAL
+        mMap = googleMap
 
-
-        map.uiSettings.isZoomControlsEnabled = true
-        map.uiSettings.isIndoorLevelPickerEnabled = true
-        map.uiSettings.isCompassEnabled = true
-        map.uiSettings.isMapToolbarEnabled = true
+        mMap.uiSettings.isZoomControlsEnabled = true
+        mMap.uiSettings.isIndoorLevelPickerEnabled = true
+        mMap.uiSettings.isCompassEnabled = true
+        mMap.uiSettings.isMapToolbarEnabled = true
 
         // Add a marker in Sydney and move the camera
         val sydney = LatLng(-34.0, 151.0)
-        map.addMarker(MarkerOptions().position(sydney).title(resources.getString(R.string.sydney_title_marker)))
-        map.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
 
         val dicodingSpace = LatLng(-6.8957643, 107.6338462)
-        map.addMarker(
+        mMap.addMarker(
             MarkerOptions()
                 .position(dicodingSpace)
-                .title(resources.getString(R.string.dicoding_title_marker))
-                .snippet(resources.getString(R.string.dicoding_snippet_marker))
+                .title("Dicoding Space")
+                .snippet("Batik Kumeli No.50")
         )
-        map.animateCamera(CameraUpdateFactory.newLatLngZoom(dicodingSpace, 15f))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(dicodingSpace, 15f))
 
-        map.setOnMapLongClickListener { latLng ->
-            map.addMarker(
+        mMap.setOnMapLongClickListener { latLng ->
+            mMap.addMarker(
                 MarkerOptions()
                     .position(latLng)
-                    .title(resources.getString(R.string.new_title_marker))
-                    .snippet(resources.getString(R.string.new_snippet_marker, latLng.latitude, latLng.longitude))
-                    .icon(markerIcon)
+                    .title("New Marker")
+                    .snippet("Lat: ${latLng.latitude} Long: ${latLng.longitude}")
+                    .icon(vectorToBitmap(R.drawable.ic_android, Color.parseColor("#3DDC84")))
             )
         }
 
-        map.setOnPoiClickListener { pointOfInterest ->
-            val poiMarker = map.addMarker(
+        mMap.setOnPoiClickListener { pointOfInterest ->
+            val poiMarker = mMap.addMarker(
                 MarkerOptions()
                     .position(pointOfInterest.latLng)
                     .title(pointOfInterest.name)
@@ -91,9 +89,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         getMyLocation()
         setMapStyle()
-
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.map_options, menu)
@@ -103,19 +99,19 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.normal_type -> {
-                map.mapType = GoogleMap.MAP_TYPE_NORMAL
+                mMap.mapType = GoogleMap.MAP_TYPE_NORMAL
                 true
             }
             R.id.satellite_type -> {
-                map.mapType = GoogleMap.MAP_TYPE_SATELLITE
+                mMap.mapType = GoogleMap.MAP_TYPE_SATELLITE
                 true
             }
             R.id.terrain_type -> {
-                map.mapType = GoogleMap.MAP_TYPE_TERRAIN
+                mMap.mapType = GoogleMap.MAP_TYPE_TERRAIN
                 true
             }
             R.id.hybrid_type -> {
-                map.mapType = GoogleMap.MAP_TYPE_HYBRID
+                mMap.mapType = GoogleMap.MAP_TYPE_HYBRID
                 true
             }
             else -> {
@@ -124,15 +120,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private val markerIcon: BitmapDescriptor by lazy {
-        val color = ContextCompat.getColor(this, R.color.color_marker)
-        vectorToBitmap( R.drawable.ic_android, color)
-    }
-
     private fun vectorToBitmap(@DrawableRes id: Int, @ColorInt color: Int): BitmapDescriptor {
         val vectorDrawable = ResourcesCompat.getDrawable(resources, id, null)
         if (vectorDrawable == null) {
-            Log.e("BitmapHelper", resources.getString(R.string.resource_not_found))
+            Log.e("BitmapHelper", "Resource not found")
             return BitmapDescriptorFactory.defaultMarker()
         }
         val bitmap = Bitmap.createBitmap(
@@ -162,7 +153,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            map.isMyLocationEnabled = true
+            mMap.isMyLocationEnabled = true
         } else {
             requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
         }
@@ -171,17 +162,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setMapStyle() {
         try {
             val success =
-                map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
+                mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.map_style))
             if (!success) {
-                Log.e(TAG, resources.getString(R.string.parsing_style_failed))
+                Log.e(TAG, "Style parsing failed.")
             }
         } catch (e: Resources.NotFoundException) {
-            Log.e(TAG, resources.getString(R.string.error_parsing_style), e)
+            Log.e(TAG, "Can't find style. Error: ", e)
         }
     }
 
     companion object {
-        private val TAG = MapsActivity::class.java.simpleName
+        private const val TAG = "MapsActivity"
     }
 
 }

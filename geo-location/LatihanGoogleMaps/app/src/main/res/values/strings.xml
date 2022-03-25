@@ -5,4 +5,12 @@
     <string name="satellite_type">Satellite</string>
     <string name="terrain_type">Terrain</string>
     <string name="hybrid_type">Hybrid</string>
+    <string name="dicoding_title_marker">Dicoding Space</string>
+    <string name="dicoding_snippet_marker">Batik Kumeli No.50"</string>
+    <string name="sydney_title_marker">Marker in Sydney</string>
+    <string name="new_title_marker">New Marker</string>
+    <string name="new_snippet_marker">Lat: %1$f Long: %2$f</string>
+    <string name="resource_not_found">Resource not found"</string>
+    <string name="parsing_style_failed">Style parsing failed.</string>
+    <string name="error_parsing_style">Can not find style. Error:</string>
 </resources>

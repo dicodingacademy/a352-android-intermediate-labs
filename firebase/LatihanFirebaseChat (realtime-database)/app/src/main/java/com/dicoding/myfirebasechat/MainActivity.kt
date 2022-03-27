@@ -31,14 +31,14 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         auth = Firebase.auth
-        if (auth.currentUser == null) {
+        val firebaseUser = auth.currentUser
+        if (firebaseUser == null) {
             // Not signed in, launch the Login activity
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
             return
         }
 
-        val firebaseUser = auth.currentUser
         db = Firebase.database
 
         val messagesRef = db.reference.child(MESSAGES_CHILD)

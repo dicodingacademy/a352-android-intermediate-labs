@@ -46,8 +46,8 @@ class MainActivity : AppCompatActivity() {
         binding.sendButton.setOnClickListener {
             val friendlyMessage = Message(
                 binding.messageEditText.text.toString(),
-                firebaseUser?.displayName.toString(),
-                firebaseUser?.photoUrl.toString(),
+                firebaseUser.displayName.toString(),
+                firebaseUser.photoUrl.toString(),
                 Date().time
             )
             messagesRef.push().setValue(friendlyMessage) { error, _ ->
@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
         val options = FirebaseRecyclerOptions.Builder<Message>()
             .setQuery(messagesRef, Message::class.java)
             .build()
-        adapter = FirebaseMessageAdapter(options, firebaseUser?.displayName)
+        adapter = FirebaseMessageAdapter(options, firebaseUser.displayName)
         binding.messageRecyclerView.adapter = adapter
     }
 

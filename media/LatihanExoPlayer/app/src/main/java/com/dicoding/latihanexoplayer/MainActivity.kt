@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         const val URL_VIDEO_DICODING =
             "https://github.com/dicodingacademy/assets/releases/download/release-video/VideoDicoding.mp4"
         const val URL_AUDIO =
-            "https://www.bensound.com/bensound-music/bensound-ukulele.mp3"
+            "https://github.com/dicodingacademy/assets/raw/main/android_intermediate_academy/bensound_ukulele.mp3"
     }
 
     private val viewBinding by lazy(LazyThreadSafetyMode.NONE) {

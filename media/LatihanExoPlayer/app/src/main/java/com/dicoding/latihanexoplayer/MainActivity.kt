@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
-        if (Util.SDK_INT > 23) {
+        if (Util.SDK_INT >= 24) {
             initializePlayer()
         }
     }
@@ -56,21 +56,21 @@ class MainActivity : AppCompatActivity() {
     public override fun onResume() {
         super.onResume()
         hideSystemUI()
-        if (Util.SDK_INT <= 23 && player == null) {
+        if ((Util.SDK_INT < 24 || player == null)) {
             initializePlayer()
         }
     }
 
     public override fun onPause() {
         super.onPause()
-        if (Util.SDK_INT <= 23) {
+        if (Util.SDK_INT < 24) {
             releasePlayer()
         }
     }
 
     public override fun onStop() {
         super.onStop()
-        if (Util.SDK_INT > 23) {
+        if (Util.SDK_INT >= 24) {
             releasePlayer()
         }
     }

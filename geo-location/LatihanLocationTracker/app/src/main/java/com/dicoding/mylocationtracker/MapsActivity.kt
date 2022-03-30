@@ -106,7 +106,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 } else {
                     Toast.makeText(
                         this@MapsActivity,
-                        "Location is not found. Check your GPS",
+                        "Location is not found. Try Again",
                         Toast.LENGTH_SHORT
                     ).show()
                 }

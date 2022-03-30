@@ -166,8 +166,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             if (!success) {
                 Log.e(TAG, "Style parsing failed.")
             }
-        } catch (e: Resources.NotFoundException) {
-            Log.e(TAG, "Can't find style. Error: ", e)
+        } catch (exception: Resources.NotFoundException) {
+            Log.e(TAG, "Can't find style. Error: ", exception)
         }
     }
 

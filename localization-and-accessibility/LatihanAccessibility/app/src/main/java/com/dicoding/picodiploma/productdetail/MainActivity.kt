@@ -47,9 +47,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupData() {
         val repository = RemoteDataSource(this)
-        val product = repository.getDetailProduct()
-
-        product.apply {
+        val product = repository.getDetailProduct().apply {
             binding.apply {
                 previewImageView.setImageResource(image)
                 nameTextView.text = name

@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         const val URL_VIDEO_DICODING =
             "https://github.com/dicodingacademy/assets/releases/download/release-video/VideoDicoding.mp4"
         const val URL_AUDIO =
-            "https://www.bensound.com/bensound-music/bensound-ukulele.mp3"
+            "https://github.com/dicodingacademy/assets/raw/main/android_intermediate_academy/bensound_ukulele.mp3"
     }
 
     private val viewBinding by lazy(LazyThreadSafetyMode.NONE) {
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
-        if (Util.SDK_INT > 23) {
+        if (Util.SDK_INT >= 24) {
             initializePlayer()
         }
     }
@@ -56,21 +56,21 @@ class MainActivity : AppCompatActivity() {
     public override fun onResume() {
         super.onResume()
         hideSystemUI()
-        if (Util.SDK_INT <= 23 && player == null) {
+        if ((Util.SDK_INT < 24 || player == null)) {
             initializePlayer()
         }
     }
 
     public override fun onPause() {
         super.onPause()
-        if (Util.SDK_INT <= 23) {
+        if (Util.SDK_INT < 24) {
             releasePlayer()
         }
     }
 
     public override fun onStop() {
         super.onStop()
-        if (Util.SDK_INT > 23) {
+        if (Util.SDK_INT >= 24) {
             releasePlayer()
         }
     }

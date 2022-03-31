@@ -12,6 +12,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:default_artwork="@drawable/music"
+        app:use_artwork="true"
+        app:resize_mode="fixed_width"
+        app:show_buffering="when_playing" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

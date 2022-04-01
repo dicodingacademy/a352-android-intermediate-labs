@@ -110,7 +110,6 @@ class MainActivity : AppCompatActivity() {
         launcherIntentCameraX.launch(intent)
     }
 
-
     private val launcherIntentCameraX = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {

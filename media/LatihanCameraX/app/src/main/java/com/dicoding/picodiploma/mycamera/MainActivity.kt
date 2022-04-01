@@ -58,19 +58,27 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        binding.cameraXButton.setOnClickListener {
-            val intent = Intent(this, CameraActivity::class.java)
-            launcherIntentCameraX.launch(intent)
-        }
-        binding.cameraButton.setOnClickListener {
-            Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
-        }
-        binding.galleryButton.setOnClickListener {
-            Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
-        }
-        binding.uploadButton.setOnClickListener {
-            Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
-        }
+        binding.cameraXButton.setOnClickListener { startCameraX() }
+        binding.cameraButton.setOnClickListener { startTakePhoto() }
+        binding.galleryButton.setOnClickListener { startGallery() }
+        binding.uploadButton.setOnClickListener { uploadImage() }
+    }
+
+    private fun startCameraX() {
+        val intent = Intent(this, CameraActivity::class.java)
+        launcherIntentCameraX.launch(intent)
+    }
+
+    private fun startGallery() {
+        Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun startTakePhoto() {
+        Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun uploadImage() {
+        Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
     }
 
     private val launcherIntentCameraX = registerForActivityResult(

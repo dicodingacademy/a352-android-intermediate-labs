@@ -1,10 +1,11 @@
 package com.dicoding.newsapp.ui.detail
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.webkit.WebViewClient
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.dicoding.newsapp.R
 import com.dicoding.newsapp.data.local.entity.NewsEntity
@@ -29,6 +30,7 @@ class NewsDetailActivity : AppCompatActivity() {
         newsDetail = intent.getParcelableExtra<NewsEntity>(NEWS_DATA) as NewsEntity
 
         supportActionBar?.title = newsDetail.title
+        binding.webView.webViewClient = WebViewClient()
         binding.webView.loadUrl(newsDetail.url.toString())
 
         viewModel.setNewsData(newsDetail)

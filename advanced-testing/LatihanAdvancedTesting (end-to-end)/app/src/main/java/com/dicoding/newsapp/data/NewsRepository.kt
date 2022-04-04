@@ -9,10 +9,10 @@ import com.dicoding.newsapp.data.local.room.NewsDao
 import com.dicoding.newsapp.data.remote.retrofit.ApiService
 import com.dicoding.newsapp.utils.wrapEspressoIdlingResource
 
-class NewsRepository (
+class NewsRepository(
     private val apiService: ApiService,
     private val newsDao: NewsDao
-    ) {
+) {
     fun getHeadlineNews(): LiveData<Result<List<NewsEntity>>> = liveData {
         emit(Result.Loading)
         wrapEspressoIdlingResource {

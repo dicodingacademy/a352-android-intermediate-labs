@@ -10,12 +10,12 @@ import androidx.core.content.ContextCompat
 
 class MyButton : AppCompatButton {
 
-    private var enabledBackground: Drawable? = null
-    private var disabledBackground: Drawable? = null
+    private lateinit var enabledBackground: Drawable
+    private lateinit var disabledBackground: Drawable
 
     private var txtColor: Int = 0
 
-//  Konstruktor dari MyButton
+    // Konstruktor dari MyButton
     constructor(context: Context) : super(context) {
         init()
     }
@@ -32,10 +32,7 @@ class MyButton : AppCompatButton {
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         // Mengubah background dari Button
-        background = when {
-            isEnabled -> enabledBackground
-            else -> disabledBackground
-        }
+        background = if(isEnabled) enabledBackground else disabledBackground
 
         // Mengubah warna text pada button
         setTextColor(txtColor)
@@ -47,16 +44,13 @@ class MyButton : AppCompatButton {
         gravity = Gravity.CENTER
 
         // Mengubah text pada button pada kondisi enable dan disable
-        text = when {
-            isEnabled -> "Submit"
-            else -> "Isi Dulu"
-        }
+        text = if(isEnabled) "Submit" else "Isi Dulu"
     }
 
     // pemanggilan Resource harus dilakukan saat kelas MyButton diinisialisasi, jadi harus dikeluarkan dari metode onDraw
     private fun init() {
         txtColor = ContextCompat.getColor(context, android.R.color.background_light)
-        enabledBackground = ContextCompat.getDrawable(context, R.drawable.bg_button)
-        disabledBackground = ContextCompat.getDrawable(context, R.drawable.bg_button_disable)
+        enabledBackground = ContextCompat.getDrawable(context, R.drawable.bg_button) as Drawable
+        disabledBackground = ContextCompat.getDrawable(context, R.drawable.bg_button_disable) as Drawable
     }
 }

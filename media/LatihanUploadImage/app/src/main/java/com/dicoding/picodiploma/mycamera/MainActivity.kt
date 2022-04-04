@@ -20,7 +20,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,7 +27,11 @@ import java.io.*
 
 
 class MainActivity : AppCompatActivity() {
+
     private lateinit var binding: ActivityMainBinding
+    private lateinit var currentPhotoPath: String
+
+    private var getFile: File? = null
 
     companion object {
         const val CAMERA_X_RESULT = 200
@@ -72,38 +75,41 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        binding.cameraXButton.setOnClickListener {
-            val intent = Intent(this, CameraActivity::class.java)
-            launcherIntentCameraX.launch(intent)
-        }
-        binding.cameraButton.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            intent.resolveActivity(packageManager)
+        binding.cameraXButton.setOnClickListener { startCameraX() }
+        binding.cameraButton.setOnClickListener { startTakePhoto() }
+        binding.galleryButton.setOnClickListener { startGallery() }
+        binding.uploadButton.setOnClickListener { uploadImage() }
+    }
 
-            createTempFile(application).also {
-                val photoURI: Uri = FileProvider.getUriForFile(
-                    this@MainActivity,
-                    "com.dicoding.picodiploma.mycamera",
-                    it
-                )
-                currentPhotoPath = it.absolutePath
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                launcherIntentCamera.launch(intent)
-            }
-        }
-        binding.galleryButton.setOnClickListener {
-            val intent = Intent()
-            intent.action = ACTION_GET_CONTENT
-            intent.type = "image/*"
-            val chooser = Intent.createChooser(intent, "Choose a Picture")
-            launcherIntentGallery.launch(chooser)
-        }
-        binding.uploadButton.setOnClickListener {
-            uploadImage()
+    private fun startGallery() {
+        val intent = Intent()
+        intent.action = ACTION_GET_CONTENT
+        intent.type = "image/*"
+        val chooser = Intent.createChooser(intent, "Choose a Picture")
+        launcherIntentGallery.launch(chooser)
+    }
+
+    private fun startTakePhoto() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.resolveActivity(packageManager)
+
+        createTempFile(application).also {
+            val photoURI: Uri = FileProvider.getUriForFile(
+                this@MainActivity,
+                "com.dicoding.picodiploma.mycamera",
+                it
+            )
+            currentPhotoPath = it.absolutePath
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+            launcherIntentCamera.launch(intent)
         }
     }
 
-    private var getFile: File? = null
+    private fun startCameraX() {
+        val intent = Intent(this, CameraActivity::class.java)
+        launcherIntentCameraX.launch(intent)
+    }
+
     private val launcherIntentCameraX = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
@@ -121,7 +127,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private lateinit var currentPhotoPath: String
     private val launcherIntentCamera = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
@@ -130,12 +135,6 @@ class MainActivity : AppCompatActivity() {
             getFile = myFile
 
             val result = BitmapFactory.decodeFile(getFile?.path)
-
-//            val result = rotateBitmap(
-//                BitmapFactory.decodeFile(getFile?.path),
-//                true
-//            )
-
             binding.previewImageView.setImageBitmap(result)
         }
     }
@@ -176,7 +175,7 @@ class MainActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val responseBody = response.body()
                         if (responseBody != null && !responseBody.error) {
-                           Toast.makeText(this@MainActivity, responseBody.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@MainActivity, responseBody.message, Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         Toast.makeText(this@MainActivity, response.message(), Toast.LENGTH_SHORT).show()

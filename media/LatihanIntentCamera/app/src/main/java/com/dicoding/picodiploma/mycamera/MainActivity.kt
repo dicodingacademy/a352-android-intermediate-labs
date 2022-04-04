@@ -62,32 +62,39 @@ class MainActivity : AppCompatActivity() {
                 REQUEST_CODE_PERMISSIONS
             )
         }
+        binding.cameraXButton.setOnClickListener { startCameraX() }
+        binding.cameraButton.setOnClickListener { startTakePhoto() }
+        binding.galleryButton.setOnClickListener { startGallery() }
+        binding.uploadButton.setOnClickListener { uploadImage() }
+    }
 
-        binding.cameraXButton.setOnClickListener {
-            val intent = Intent(this, CameraActivity::class.java)
-            launcherIntentCameraX.launch(intent)
-        }
-        binding.cameraButton.setOnClickListener {
-            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            intent.resolveActivity(packageManager)
+    private fun startCameraX() {
+        val intent = Intent(this, CameraActivity::class.java)
+        launcherIntentCameraX.launch(intent)
+    }
 
-            createTempFile(application).also {
-                val photoURI: Uri = FileProvider.getUriForFile(
-                    this@MainActivity,
-                    "com.dicoding.picodiploma.mycamera",
-                    it
-                )
-                currentPhotoPath = it.absolutePath
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                launcherIntentCamera.launch(intent)
-            }
+    private fun startTakePhoto() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.resolveActivity(packageManager)
+
+        createTempFile(application).also {
+            val photoURI: Uri = FileProvider.getUriForFile(
+                this@MainActivity,
+                "com.dicoding.picodiploma.mycamera",
+                it
+            )
+            currentPhotoPath = it.absolutePath
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+            launcherIntentCamera.launch(intent)
         }
-        binding.galleryButton.setOnClickListener {
-            Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
-        }
-        binding.uploadButton.setOnClickListener {
-            Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
-        }
+    }
+
+    private fun startGallery() {
+        Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun uploadImage() {
+        Toast.makeText(this, "Fitur ini belum tersedia", Toast.LENGTH_SHORT).show()
     }
 
     private val launcherIntentCameraX = registerForActivityResult(

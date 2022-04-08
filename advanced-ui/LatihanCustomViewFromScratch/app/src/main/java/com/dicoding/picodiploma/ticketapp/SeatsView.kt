@@ -146,25 +146,16 @@ class SeatsView : View {
         val heightRowTree = (halfOfHeight + 0F)..(halfOfHeight + 200F)
         val heightRowFour =(halfOfHeight + 300F)..(halfOfHeight + 500F)
 
-        when (event?.action) {
-            ACTION_DOWN -> {
-                if (event.x in widthColumnOne && event.y in heightRowOne ){
-                    booking(0)
-                } else if (event.x in widthColumnTwo && event.y in heightRowOne) {
-                    booking(1)
-                } else if (event.x in widthColumnOne && event.y in heightRowTwo) {
-                    booking(2)
-                } else if (event.x in widthColumnTwo && event.y in heightRowTwo) {
-                    booking(3)
-                } else if (event.x in widthColumnOne && event.y in heightRowTree) {
-                    booking(4)
-                } else if (event.x in widthColumnTwo && event.y in heightRowTree) {
-                    booking(5)
-                } else if (event.x in widthColumnOne && event.y in heightRowFour) {
-                    booking(6)
-                } else if (event.x in widthColumnTwo && event.y in heightRowFour) {
-                    booking(7)
-                }
+        if (event?.action == ACTION_DOWN) {
+            when {
+                event.x in widthColumnOne && event.y in heightRowOne -> booking(0)
+                event.x in widthColumnTwo && event.y in heightRowOne -> booking(1)
+                event.x in widthColumnOne && event.y in heightRowTwo -> booking(2)
+                event.x in widthColumnTwo && event.y in heightRowTwo -> booking(3)
+                event.x in widthColumnOne && event.y in heightRowTree -> booking(4)
+                event.x in widthColumnTwo && event.y in heightRowTree -> booking(5)
+                event.x in widthColumnOne && event.y in heightRowFour -> booking(6)
+                event.x in widthColumnTwo && event.y in heightRowFour -> booking(7)
             }
         }
         return true

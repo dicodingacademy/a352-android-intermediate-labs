@@ -4,8 +4,11 @@ import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.CountDownTimer
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
+import kotlinx.coroutines.*
 
 
 class MyForegroundService : Service() {
@@ -14,13 +17,27 @@ class MyForegroundService : Service() {
         private const val NOTIFICATION_ID = 1
         private const val CHANNEL_ID = "channel_01"
         private const val CHANNEL_NAME = "dicoding channel"
+        private const val TAG = "MyForegroundService"
     }
+
+    private val serviceJob = Job()
+    private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
 
     override fun onBind(intent: Intent): IBinder? {
         throw UnsupportedOperationException("Not yet implemented")
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+
+        Log.d(TAG, "Service dijalankan...")
+        serviceScope.launch {
+            for (i in 1..50) {
+                delay(1000)
+                Log.d(TAG, "Do Something $i")
+            }
+            stopSelf()
+            Log.d(TAG, "Service dihentikan")
+        }
 
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingFlags: Int = if (Build.VERSION.SDK_INT >= 23) {
@@ -47,7 +64,12 @@ class MyForegroundService : Service() {
         val notification = notificationBuilder.build()
 
         startForeground(NOTIFICATION_ID, notification)
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        serviceJob.cancel()
+        Log.d(TAG, "onDestroy: Service dihentikan")
+    }
 }

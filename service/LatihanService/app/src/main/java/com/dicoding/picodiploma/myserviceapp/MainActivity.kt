@@ -5,16 +5,13 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.MutableLiveData
-import com.dicoding.picodiploma.myserviceapp.MyBoundService.MyBinder
+import com.dicoding.picodiploma.myserviceapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var tvBoundService: TextView
+    private lateinit var binding: ActivityMainBinding
     private var boundStatus = false
     private lateinit var boundService: MyBoundService
 
@@ -39,51 +36,38 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val serviceIntent = Intent(this, MyService::class.java)
-
-        val btnStartService = findViewById<Button>(R.id.btn_start_service)
-        btnStartService.setOnClickListener { 
+        binding.btnStartService.setOnClickListener {
             startService(serviceIntent)
         }
-
-        val btnStopService = findViewById<Button>(R.id.btn_stop_service)
-        btnStopService.setOnClickListener {
+        binding.btnStopService.setOnClickListener {
             stopService(serviceIntent)
         }
 
-        val btnStartForegroundService = findViewById<Button>(R.id.btn_start_foreground_service)
-
-        val foregroundServiceIntent = Intent(this,  MyForegroundService::class.java)
-        btnStartForegroundService.setOnClickListener {
+        val foregroundServiceIntent = Intent(this, MyForegroundService::class.java)
+        binding.btnStartForegroundService.setOnClickListener {
             ContextCompat.startForegroundService(this, foregroundServiceIntent)
         }
-
-        val btnStopForegroundService = findViewById<Button>(R.id.btn_stop_foreground_service)
-        btnStopForegroundService.setOnClickListener {
+        binding.btnStopForegroundService.setOnClickListener {
             stopService(serviceIntent)
         }
 
         val boundServiceIntent = Intent(this, MyBoundService::class.java)
-
-        val btnStartBoundService = findViewById<Button>(R.id.btn_start_bound_service)
-        tvBoundService = findViewById(R.id.tv_bound_service_number)
-
-        btnStartBoundService.setOnClickListener { 
+        binding.btnStartBoundService.setOnClickListener {
             bindService(boundServiceIntent, connection, BIND_AUTO_CREATE)
         }
-
-        val btnStopBoundService = findViewById<Button>(R.id.btn_stop_bound_service)
-        btnStopBoundService.setOnClickListener {
+        binding.btnStopBoundService.setOnClickListener {
             unbindService(connection)
         }
 
     }
 
     private fun getNumberFromService() {
-        boundService.numberLiveData.observe(this){
-            tvBoundService.text = it.toString()
+        boundService.numberLiveData.observe(this) { number ->
+            binding.tvBoundServiceNumber.text = number.toString()
         }
     }
 

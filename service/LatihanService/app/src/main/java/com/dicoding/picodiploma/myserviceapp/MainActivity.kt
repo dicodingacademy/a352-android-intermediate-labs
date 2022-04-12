@@ -36,10 +36,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val serviceIntent = Intent(this, MyService::class.java)
+
         val btnStartService = findViewById<Button>(R.id.btn_start_service)
         btnStartService.setOnClickListener { 
-            val mStartServiceIntent = Intent(this, MyService::class.java)
-            startService(mStartServiceIntent)
+            startService(serviceIntent)
+        }
+
+        val btnStopService = findViewById<Button>(R.id.btn_stop_service)
+        btnStopService.setOnClickListener {
+            stopService(serviceIntent)
         }
 
         val btnStartForegroundService = findViewById<Button>(R.id.btn_start_foreground_service)

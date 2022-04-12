@@ -22,7 +22,10 @@ class MyService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Log.d(TAG, "Service dijalankan...")
         serviceScope.launch {
-            delay(3000)
+            for (i in 1..50) {
+                delay(1000)
+                Log.d(TAG, "Do Something $i")
+            }
             stopSelf()
             Log.d(TAG, "Service dihentikan")
         }
@@ -32,7 +35,7 @@ class MyService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         serviceJob.cancel()
-        Log.d(TAG, "onDestroy: ")
+        Log.d(TAG, "onDestroy: Service dihentikan")
     }
 
 }

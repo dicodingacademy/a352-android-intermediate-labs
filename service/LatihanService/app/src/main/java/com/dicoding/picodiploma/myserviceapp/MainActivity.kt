@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.dicoding.picodiploma.myserviceapp.MyBoundService.MyBinder
 
 class MainActivity : AppCompatActivity() {
@@ -39,6 +40,18 @@ class MainActivity : AppCompatActivity() {
         btnStartService.setOnClickListener { 
             val mStartServiceIntent = Intent(this, MyService::class.java)
             startService(mStartServiceIntent)
+        }
+
+        val btnStartForegroundService = findViewById<Button>(R.id.btn_start_foreground_service)
+        btnStartForegroundService.setOnClickListener {
+            val mStartForegroundServiceIntent = Intent(this,  MyForegroundService::class.java)
+            ContextCompat.startForegroundService(this, mStartForegroundServiceIntent)
+        }
+
+        val btnStopForegroundService = findViewById<Button>(R.id.btn_stop_foreground_service)
+        btnStopForegroundService.setOnClickListener {
+            val serviceIntent = Intent(this, MyForegroundService::class.java)
+            stopService(serviceIntent)
         }
 
         val btnStartBoundService = findViewById<Button>(R.id.btn_start_bound_service)

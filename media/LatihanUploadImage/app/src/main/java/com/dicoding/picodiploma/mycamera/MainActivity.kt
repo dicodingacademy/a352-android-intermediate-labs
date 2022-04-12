@@ -93,7 +93,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.resolveActivity(packageManager)
 
-        createTempFile(application).also {
+        createCustomTempFile(application).also {
             val photoURI: Uri = FileProvider.getUriForFile(
                 this@MainActivity,
                 "com.dicoding.picodiploma.mycamera",

@@ -6,10 +6,10 @@ import android.os.IBinder
 import android.util.Log
 import kotlinx.coroutines.*
 
-class MyService : Service() {
+class MyBackgroundService : Service() {
 
     companion object {
-        internal val TAG = MyService::class.java.simpleName
+        internal val TAG = MyBackgroundService::class.java.simpleName
     }
 
     private val serviceJob = Job()

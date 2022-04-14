@@ -40,10 +40,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val serviceIntent = Intent(this, MyBackgroundService::class.java)
-        binding.btnStartService.setOnClickListener {
+        binding.btnStartBackgroundService.setOnClickListener {
             startService(serviceIntent)
         }
-        binding.btnStopService.setOnClickListener {
+        binding.btnStopBackgroundService.setOnClickListener {
             stopService(serviceIntent)
         }
 
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.startForegroundService(this, foregroundServiceIntent)
         }
         binding.btnStopForegroundService.setOnClickListener {
-            stopService(serviceIntent)
+            stopService(foregroundServiceIntent)
         }
 
         val boundServiceIntent = Intent(this, MyBoundService::class.java)

@@ -29,17 +29,6 @@ class MyForegroundService : Service() {
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-
-        Log.d(TAG, "Service dijalankan...")
-        serviceScope.launch {
-            for (i in 1..50) {
-                delay(1000)
-                Log.d(TAG, "Do Something $i")
-            }
-            stopSelf()
-            Log.d(TAG, "Service dihentikan")
-        }
-
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingFlags: Int = if (Build.VERSION.SDK_INT >= 23) {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
@@ -65,6 +54,18 @@ class MyForegroundService : Service() {
         val notification = notificationBuilder.build()
 
         startForeground(NOTIFICATION_ID, notification)
+
+        Log.d(TAG, "Service dijalankan...")
+        serviceScope.launch {
+            for (i in 1..50) {
+                delay(1000)
+                Log.d(TAG, "Do Something $i")
+            }
+            stopForeground(true);
+            stopSelf()
+            Log.d(TAG, "Service dihentikan")
+        }
+
         return START_NOT_STICKY
     }
 

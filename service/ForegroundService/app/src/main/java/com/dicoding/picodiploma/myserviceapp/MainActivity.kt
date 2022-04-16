@@ -1,12 +1,9 @@
 package com.dicoding.picodiploma.myserviceapp
 
-import android.content.ComponentName
 import android.content.Intent
-import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.dicoding.picodiploma.myserviceapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -28,7 +25,11 @@ class MainActivity : AppCompatActivity() {
 
         val foregroundServiceIntent = Intent(this, MyForegroundService::class.java)
         binding.btnStartForegroundService.setOnClickListener {
-            ContextCompat.startForegroundService(this, foregroundServiceIntent)
+            if (Build.VERSION.SDK_INT >= 26) {
+                startForegroundService(foregroundServiceIntent)
+            } else {
+                startService(foregroundServiceIntent)
+            }
         }
         binding.btnStopForegroundService.setOnClickListener {
             stopService(foregroundServiceIntent)

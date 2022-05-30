@@ -41,13 +41,13 @@ class HomeActivityTest{
     }
 
     @Test
-    fun loadHeadlineNews() {
+    fun loadHeadlineNews_Success() {
         onView(withId(R.id.rv_news)).check(matches(isDisplayed()))
         onView(withId(R.id.rv_news)).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(10))
     }
 
     @Test
-    fun loadDetailNews() {
+    fun loadDetailNews_Success() {
         Intents.init()
         onView(withId(R.id.rv_news)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
         intended(hasComponent(NewsDetailActivity::class.java.name))
@@ -55,7 +55,7 @@ class HomeActivityTest{
     }
 
     @Test
-    fun loadBookmarkedNews() {
+    fun loadBookmarkedNews_Success() {
         onView(withId(R.id.rv_news)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
         onView(withId(R.id.action_bookmark)).perform(click())
         pressBack()

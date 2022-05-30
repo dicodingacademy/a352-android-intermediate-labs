@@ -8,13 +8,14 @@ import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import androidx.recyclerview.widget.ListUpdateCallback
-import com.dicoding.myunlimitedquotes.MainCoroutineRule
-import com.dicoding.myunlimitedquotes.adapter.QuoteListAdapter
-import com.dicoding.myunlimitedquotes.network.QuoteResponseItem
 import com.dicoding.myunlimitedquotes.DataDummy
+import com.dicoding.myunlimitedquotes.MainDispatcherRule
+import com.dicoding.myunlimitedquotes.adapter.QuoteListAdapter
 import com.dicoding.myunlimitedquotes.getOrAwaitValue
+import com.dicoding.myunlimitedquotes.network.QuoteResponseItem
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
@@ -27,18 +28,18 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class MainViewModelTest{
     @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    var mainCoroutineRules = MainCoroutineRule()
+    val mainDispatcherRules = MainDispatcherRule()
 
     @Mock
     private lateinit var newsViewModel: MainViewModel
 
     @Test
-    fun `when Get Quote Should Not Null`() = mainCoroutineRules.runBlockingTest {
+    fun `when Get Quote Should Not Null and Return Success`() = mainDispatcherRules.testScope.runTest {
         val dummyQuote = DataDummy.generateDummyQuoteResponse()
-        val data = PagingData.from(dummyQuote)
+//        val data: PagingData<QuoteResponseItem> = PagingData.from(dummyQuote)
         val data: PagingData<QuoteResponseItem> = PagedTestDataSources.snapshot(dummyQuote)
         val quote = MutableLiveData<PagingData<QuoteResponseItem>>()
         quote.value = data
@@ -49,8 +50,8 @@ class MainViewModelTest{
         val differ = AsyncPagingDataDiffer(
             diffCallback = QuoteListAdapter.DIFF_CALLBACK,
             updateCallback = noopListUpdateCallback,
-            mainDispatcher = mainCoroutineRules.dispatcher,
-            workerDispatcher = mainCoroutineRules.dispatcher,
+            mainDispatcher = mainDispatcherRules.testDispatcher,
+            workerDispatcher = mainDispatcherRules.testDispatcher,
         )
         differ.submitData(actualNews)
 

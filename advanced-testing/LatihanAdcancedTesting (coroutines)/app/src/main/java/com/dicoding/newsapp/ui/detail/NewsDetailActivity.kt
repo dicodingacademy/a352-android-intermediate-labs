@@ -39,9 +39,9 @@ class NewsDetailActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.detail_menu, menu)
         this.menu = menu
-        viewModel.bookmarkStatus.observe(this, { status ->
+        viewModel.bookmarkStatus.observe(this) { status ->
             setBookmarkState(status)
-        })
+        }
         return true
     }
 

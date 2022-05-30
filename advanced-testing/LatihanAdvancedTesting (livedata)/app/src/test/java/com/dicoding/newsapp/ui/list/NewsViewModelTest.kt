@@ -21,7 +21,7 @@ import org.mockito.junit.MockitoJUnitRunner
 class NewsViewModelTest {
 
     @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     @Mock
     private lateinit var newsRepository: NewsRepository

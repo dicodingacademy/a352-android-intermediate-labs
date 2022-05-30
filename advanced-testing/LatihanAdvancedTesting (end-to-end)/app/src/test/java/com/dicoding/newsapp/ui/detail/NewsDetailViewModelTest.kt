@@ -2,12 +2,12 @@ package com.dicoding.newsapp.ui.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.dicoding.newsapp.DataDummy
-import com.dicoding.newsapp.MainCoroutineRule
+import com.dicoding.newsapp.MainDispatcherRule
 import com.dicoding.newsapp.data.NewsRepository
-import com.dicoding.newsapp.getOrAwaitValue
+import com.dicoding.newsapp.utils.DataDummy
+import com.dicoding.newsapp.utils.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -22,7 +22,7 @@ import org.mockito.junit.MockitoJUnitRunner
 class NewsDetailViewModelTest{
 
     @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     @Mock
     private lateinit var newsRepository: NewsRepository
@@ -36,10 +36,10 @@ class NewsDetailViewModelTest{
     }
 
     @get:Rule
-    var mainCoroutineRule = MainCoroutineRule()
+    val mainDispatcherRule = MainDispatcherRule()
 
     @Test
-    fun `when bookmarkStatus false Should call saveNews`() = mainCoroutineRule.runBlockingTest {
+    fun `when bookmarkStatus false Should call saveNews`() = runTest {
         val expectedBoolean = MutableLiveData<Boolean>()
         expectedBoolean.value = false
         `when`(newsRepository.isNewsBookmarked(dummyDetailNews.title)).thenReturn(expectedBoolean)
@@ -51,7 +51,7 @@ class NewsDetailViewModelTest{
     }
 
     @Test
-    fun `when bookmarkStatus true Should call deleteNews`() = mainCoroutineRule.runBlockingTest {
+    fun `when bookmarkStatus true Should call deleteNews`() = runTest {
         val expectedBoolean = MutableLiveData<Boolean>()
         expectedBoolean.value = true
         `when`(newsRepository.isNewsBookmarked(dummyDetailNews.title)).thenReturn(expectedBoolean)

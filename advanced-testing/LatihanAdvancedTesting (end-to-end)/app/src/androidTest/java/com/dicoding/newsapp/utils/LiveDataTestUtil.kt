@@ -1,4 +1,4 @@
-package com.dicoding.newsapp
+package com.dicoding.newsapp.utils
 
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData

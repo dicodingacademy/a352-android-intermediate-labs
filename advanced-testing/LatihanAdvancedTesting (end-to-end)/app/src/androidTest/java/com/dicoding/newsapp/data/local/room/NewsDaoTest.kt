@@ -5,10 +5,10 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.dicoding.newsapp.DataDummy
-import com.dicoding.newsapp.getOrAwaitValue
+import com.dicoding.newsapp.utils.DataDummy
+import com.dicoding.newsapp.utils.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.*
 import org.junit.runner.RunWith
 
@@ -38,7 +38,7 @@ class NewsDaoTest{
     fun closeDb() = database.close()
 
     @Test
-    fun saveNews() = runBlockingTest {
+    fun saveNews() = runTest {
         dao.saveNews(sampleNews)
         val actualNews = dao.getBookmarkedNews().getOrAwaitValue()
         Assert.assertEquals(sampleNews.title, actualNews[0].title)
@@ -46,7 +46,7 @@ class NewsDaoTest{
     }
 
     @Test
-    fun deleteNews() = runBlockingTest {
+    fun deleteNews() = runTest {
         dao.saveNews(sampleNews)
         dao.deleteNews(sampleNews.title)
         val actualNews = dao.getBookmarkedNews().getOrAwaitValue()

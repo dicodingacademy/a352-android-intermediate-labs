@@ -37,7 +37,7 @@ class NewsViewModelTest {
     fun `when Get HeadlineNews Should Not Null and Return Success`() {
         val expectedNews = MutableLiveData<Result<List<NewsEntity>>>()
         expectedNews.value = Result.Success(dummyNews)
-        `when`(newsViewModel.getHeadlineNews()).thenReturn(expectedNews)
+        `when`(newsRepository.getHeadlineNews()).thenReturn(expectedNews)
 
         val actualNews = newsViewModel.getHeadlineNews().getOrAwaitValue()
 
@@ -51,7 +51,7 @@ class NewsViewModelTest {
     fun `when Network Error Should Return Error`() {
         val headlineNews = MutableLiveData<Result<List<NewsEntity>>>()
         headlineNews.value = Result.Error("Error")
-        `when`(newsViewModel.getHeadlineNews()).thenReturn(headlineNews)
+        `when`(newsRepository.getHeadlineNews()).thenReturn(headlineNews)
 
         val actualNews = newsViewModel.getHeadlineNews().getOrAwaitValue()
         Mockito.verify(newsRepository).getHeadlineNews()

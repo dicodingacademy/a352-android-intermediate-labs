@@ -1,13 +1,13 @@
 package com.dicoding.newsapp.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.dicoding.newsapp.DataDummy
-import com.dicoding.newsapp.MainCoroutineRule
+import com.dicoding.newsapp.MainDispatcherRule
 import com.dicoding.newsapp.data.local.room.NewsDao
 import com.dicoding.newsapp.data.remote.retrofit.ApiService
-import com.dicoding.newsapp.getOrAwaitValue
+import com.dicoding.newsapp.utils.DataDummy
+import com.dicoding.newsapp.utils.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -16,10 +16,10 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class NewsRepositoryTest{
     @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
-    var mainCoroutineRule = MainCoroutineRule()
+    val mainDispatcherRule = MainDispatcherRule()
 
     private lateinit var apiService: ApiService
     private lateinit var newsDao : NewsDao
@@ -33,7 +33,7 @@ class NewsRepositoryTest{
     }
 
     @Test
-    fun `when getNews Should Not Null`() = mainCoroutineRule.runBlockingTest {
+    fun `when getNews Should Not Null`() = runTest {
         val expectedNews = DataDummy.generateDummyNewsResponse()
         val actualNews = apiService.getNews("apiKey")
         Assert.assertNotNull(actualNews)
@@ -41,7 +41,7 @@ class NewsRepositoryTest{
     }
 
     @Test
-    fun `when saveNews Should Exist in getBookmarkedNews`() = mainCoroutineRule.runBlockingTest {
+    fun `when saveNews Should Exist in getBookmarkedNews`() = runTest {
         val sampleNews = DataDummy.generateDummyNewsEntity()[0]
         newsDao.saveNews(sampleNews)
         val actualNews = newsDao.getBookmarkedNews().getOrAwaitValue()
@@ -50,7 +50,7 @@ class NewsRepositoryTest{
     }
 
     @Test
-    fun `when deleteNews Should Not Exist in getBookmarkedNews`() = mainCoroutineRule.runBlockingTest {
+    fun `when deleteNews Should Not Exist in getBookmarkedNews`() = runTest {
         val sampleNews = DataDummy.generateDummyNewsEntity()[0]
         newsDao.saveNews(sampleNews)
         newsDao.deleteNews(sampleNews.title)

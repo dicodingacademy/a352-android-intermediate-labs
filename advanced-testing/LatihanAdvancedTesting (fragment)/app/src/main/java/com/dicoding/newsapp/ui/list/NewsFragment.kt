@@ -46,7 +46,7 @@ class NewsFragment : Fragment() {
         }
 
         if (tabName == TAB_NEWS) {
-            viewModel.getHeadlineNews().observe(viewLifecycleOwner, { result ->
+            viewModel.getHeadlineNews().observe(viewLifecycleOwner) { result ->
                 if (result != null) {
                     when (result) {
                         is Result.Loading -> {
@@ -64,15 +64,15 @@ class NewsFragment : Fragment() {
                         }
                     }
                 }
-            })
+            }
         } else if (tabName == TAB_BOOKMARK) {
-            viewModel.getBookmarkedNews().observe(viewLifecycleOwner, { bookmarkedNews ->
+            viewModel.getBookmarkedNews().observe(viewLifecycleOwner) { bookmarkedNews ->
                 newsAdapter.submitList(bookmarkedNews)
                 binding?.progressBar?.visibility = View.GONE
                 binding?.viewError?.tvError?.text = getString(R.string.no_data)
                 binding?.viewError?.root?.visibility =
                     if (bookmarkedNews.isNotEmpty()) View.GONE else View.VISIBLE
-            })
+            }
         }
 
         binding?.rvNews?.apply {

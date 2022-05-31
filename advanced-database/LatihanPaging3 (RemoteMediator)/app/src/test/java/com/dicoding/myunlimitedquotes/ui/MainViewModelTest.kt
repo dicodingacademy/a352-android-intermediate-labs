@@ -41,7 +41,7 @@ class MainViewModelTest {
     fun `when Get Quote Should Not Null and Return Success`() = runTest {
         val dummyQuote = DataDummy.generateDummyQuoteResponse()
 //        val data: PagingData<QuoteResponseItem> = PagingData.from(dummyQuote)
-        val data: PagingData<QuoteResponseItem> = PagedTestDataSources.snapshot(dummyQuote)
+        val data: PagingData<QuoteResponseItem> = QuotePagingSource.snapshot(dummyQuote)
         val expectedQuote = MutableLiveData<PagingData<QuoteResponseItem>>()
         expectedQuote.value = data
         Mockito.`when`(quoteRepository.getQuote()).thenReturn(expectedQuote)
@@ -63,8 +63,7 @@ class MainViewModelTest {
     }
 }
 
-class PagedTestDataSources private constructor(private val items: List<QuoteResponseItem>) :
-    PagingSource<Int, LiveData<List<QuoteResponseItem>>>() {
+class QuotePagingSource : PagingSource<Int, LiveData<List<QuoteResponseItem>>>() {
     companion object {
         fun snapshot(items: List<QuoteResponseItem>): PagingData<QuoteResponseItem> {
             return PagingData.from(items)

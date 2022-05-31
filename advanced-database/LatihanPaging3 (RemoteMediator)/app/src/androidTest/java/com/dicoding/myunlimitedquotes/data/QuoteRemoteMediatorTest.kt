@@ -7,16 +7,18 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.dicoding.myunlimitedquotes.database.QuoteDatabase
 import com.dicoding.myunlimitedquotes.network.ApiService
 import com.dicoding.myunlimitedquotes.network.QuoteResponseItem
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @ExperimentalPagingApi
 @RunWith(AndroidJUnit4::class)
-class QuoteRemoteMediatorTest{
+class QuoteRemoteMediatorTest {
 
     private var mockApi: ApiService = FakeApiService()
     private var mockDb: QuoteDatabase = Room.inMemoryDatabaseBuilder(
@@ -25,7 +27,7 @@ class QuoteRemoteMediatorTest{
     ).allowMainThreadQueries().build()
 
     @Test
-    fun refreshLoadReturnsSuccessResultWhenMoreDataIsPresent() = runBlocking {
+    fun refreshLoadReturnsSuccessResultWhenMoreDataIsPresent() = runTest {
         val remoteMediator = QuoteRemoteMediator(
             mockDb,
             mockApi,
@@ -37,8 +39,8 @@ class QuoteRemoteMediatorTest{
             10
         )
         val result = remoteMediator.load(LoadType.REFRESH, pagingState)
-        assertTrue (result is RemoteMediator.MediatorResult.Success)
-        assertFalse ((result as RemoteMediator.MediatorResult.Success).endOfPaginationReached)
+        assertTrue(result is RemoteMediator.MediatorResult.Success)
+        assertFalse((result as RemoteMediator.MediatorResult.Success).endOfPaginationReached)
     }
 
     @After
@@ -47,7 +49,8 @@ class QuoteRemoteMediatorTest{
     }
 }
 
-class FakeApiService: ApiService{
+class FakeApiService : ApiService {
+
     override suspend fun getQuote(page: Int, size: Int): List<QuoteResponseItem> {
         val items: MutableList<QuoteResponseItem> = arrayListOf()
 
@@ -60,6 +63,6 @@ class FakeApiService: ApiService{
             items.add(quote)
         }
 
-        return items.subList((page-1)*size, (page-1)*size+size)
+        return items.subList((page - 1) * size, (page - 1) * size + size)
     }
 }

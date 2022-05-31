@@ -11,10 +11,11 @@ import androidx.recyclerview.widget.ListUpdateCallback
 import com.dicoding.myunlimitedquotes.DataDummy
 import com.dicoding.myunlimitedquotes.MainDispatcherRule
 import com.dicoding.myunlimitedquotes.adapter.QuoteListAdapter
+import com.dicoding.myunlimitedquotes.data.QuoteRepository
 import com.dicoding.myunlimitedquotes.getOrAwaitValue
 import com.dicoding.myunlimitedquotes.network.QuoteResponseItem
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Rule
@@ -26,7 +27,7 @@ import org.mockito.junit.MockitoJUnitRunner
 
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
-class MainViewModelTest{
+class MainViewModelTest {
     @get:Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
@@ -34,31 +35,29 @@ class MainViewModelTest{
     val mainDispatcherRules = MainDispatcherRule()
 
     @Mock
-    private lateinit var newsViewModel: MainViewModel
+    private lateinit var quoteRepository: QuoteRepository
 
     @Test
-    fun `when Get Quote Should Not Null and Return Success`() = mainDispatcherRules.testScope.runTest {
+    fun `when Get Quote Should Not Null and Return Success`() = runTest {
         val dummyQuote = DataDummy.generateDummyQuoteResponse()
 //        val data: PagingData<QuoteResponseItem> = PagingData.from(dummyQuote)
         val data: PagingData<QuoteResponseItem> = PagedTestDataSources.snapshot(dummyQuote)
-        val quote = MutableLiveData<PagingData<QuoteResponseItem>>()
-        quote.value = data
-
-        Mockito.`when`(newsViewModel.quote).thenReturn(quote)
-        val actualNews: PagingData<QuoteResponseItem> = newsViewModel.quote.getOrAwaitValue()
+        val expectedQuote = MutableLiveData<PagingData<QuoteResponseItem>>()
+        expectedQuote.value = data
+        Mockito.`when`(quoteRepository.getQuote()).thenReturn(expectedQuote)
+        
+        val mainViewModel = MainViewModel(quoteRepository)
+        val actualQuote: PagingData<QuoteResponseItem> = mainViewModel.quote.getOrAwaitValue()
 
         val differ = AsyncPagingDataDiffer(
             diffCallback = QuoteListAdapter.DIFF_CALLBACK,
             updateCallback = noopListUpdateCallback,
-            mainDispatcher = mainDispatcherRules.testDispatcher,
-            workerDispatcher = mainDispatcherRules.testDispatcher,
+            workerDispatcher = Dispatchers.Main,
         )
-        differ.submitData(actualNews)
+        differ.submitData(actualQuote)
 
-        advanceUntilIdle()
-
-        Mockito.verify(newsViewModel).quote
         Assert.assertNotNull(differ.snapshot())
+        Assert.assertEquals(dummyQuote, differ.snapshot())
         Assert.assertEquals(dummyQuote.size, differ.snapshot().size)
         Assert.assertEquals(dummyQuote[0].author, differ.snapshot()[0]?.author)
     }
@@ -77,7 +76,7 @@ class PagedTestDataSources private constructor(private val items: List<QuoteResp
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, LiveData<List<QuoteResponseItem>>> {
-        return LoadResult.Page(emptyList(), 0 , 1)
+        return LoadResult.Page(emptyList(), 0, 1)
     }
 }
 

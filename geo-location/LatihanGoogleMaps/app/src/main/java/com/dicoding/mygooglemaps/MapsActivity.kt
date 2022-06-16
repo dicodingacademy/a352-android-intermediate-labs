@@ -2,9 +2,11 @@ package com.dicoding.mygooglemaps
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -21,13 +23,9 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptor
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import android.content.res.Resources
-
-import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.*
+import java.io.IOException
+import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -89,6 +87,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         getMyLocation()
         setMapStyle()
+        addManyMarker()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -169,6 +168,55 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         } catch (exception: Resources.NotFoundException) {
             Log.e(TAG, "Can't find style. Error: ", exception)
         }
+    }
+
+    data class TourismPlace(
+        val name: String,
+        val latitude: Double,
+        val longitude: Double
+    )
+
+    private val boundsBuilder = LatLngBounds.Builder()
+
+    private fun addManyMarker() {
+        val tourismPlace = listOf(
+            TourismPlace("Floating Market Lembang", -6.8168954,107.6151046),
+            TourismPlace("The Great Asia Africa", -6.8331128,107.6048483),
+            TourismPlace("Rabbit Town", -6.8668408,107.608081),
+            TourismPlace("Alun-Alun Kota Bandung", -6.9218518,107.6025294),
+            TourismPlace("Orchid Forest Cikole", -6.780725, 107.637409),
+        )
+        tourismPlace.forEach { tourism ->
+            val latLng = LatLng(tourism.latitude, tourism.longitude)
+            val addressName = getAddressName(tourism.latitude, tourism.longitude)
+            mMap.addMarker(MarkerOptions().position(latLng).title(tourism.name).snippet(addressName))
+            boundsBuilder.include(latLng)
+        }
+
+        val bounds: LatLngBounds = boundsBuilder.build()
+        mMap.animateCamera(
+            CameraUpdateFactory.newLatLngBounds(
+                bounds,
+                resources.displayMetrics.widthPixels,
+                resources.displayMetrics.heightPixels,
+                300
+            )
+        )
+    }
+
+    private fun getAddressName(lat: Double, lon: Double): String? {
+        var addressName: String? = null
+        val geocoder = Geocoder(this@MapsActivity, Locale.getDefault())
+        try {
+            val list = geocoder.getFromLocation(lat, lon, 1)
+            if (list != null && list.size != 0) {
+                addressName = list[0].getAddressLine(0)
+                Log.d(TAG, "getAddressName: $addressName")
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return addressName
     }
 
     companion object {

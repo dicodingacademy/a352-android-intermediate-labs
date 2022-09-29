@@ -1,0 +1,44 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Widget.MyWidgets.AppWidget.Container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/Theme.MyWidgets.AppWidgetContainer">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:orientation="horizontal"
+        android:padding="@dimen/widget_margin"
+        android:weightSum="9">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:padding="16dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/dicoding_logo_full" />
+        <TextView
+            android:id="@+id/appwidget_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            android:layout_weight="3"
+            android:contentDescription="@string/appwidget_text"
+            android:gravity="center"
+            android:text="@string/random"
+            android:textColor="#ffffff"
+            android:textSize="15sp"
+            android:textStyle="bold|italic" />
+        <Button
+            android:id="@+id/btn_click"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:text="@string/generate"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+</RelativeLayout>

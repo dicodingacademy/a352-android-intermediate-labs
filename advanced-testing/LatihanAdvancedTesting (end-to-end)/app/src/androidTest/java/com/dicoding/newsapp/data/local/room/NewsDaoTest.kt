@@ -18,7 +18,7 @@ import org.junit.runner.RunWith
 class NewsDaoTest{
 
     @get:Rule
-    var instantExecutorRule = InstantTaskExecutorRule()
+    val instantExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var database: NewsDatabase
     private lateinit var dao: NewsDao
@@ -38,7 +38,7 @@ class NewsDaoTest{
     fun closeDb() = database.close()
 
     @Test
-    fun saveNews() = runTest {
+    fun saveNews_Success() = runTest {
         dao.saveNews(sampleNews)
         val actualNews = dao.getBookmarkedNews().getOrAwaitValue()
         Assert.assertEquals(sampleNews.title, actualNews[0].title)
@@ -46,7 +46,7 @@ class NewsDaoTest{
     }
 
     @Test
-    fun deleteNews() = runTest {
+    fun deleteNews_Success() = runTest {
         dao.saveNews(sampleNews)
         dao.deleteNews(sampleNews.title)
         val actualNews = dao.getBookmarkedNews().getOrAwaitValue()

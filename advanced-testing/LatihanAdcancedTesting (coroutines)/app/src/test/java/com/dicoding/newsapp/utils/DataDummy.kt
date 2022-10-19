@@ -1,4 +1,4 @@
-package com.dicoding.newsapp
+package com.dicoding.newsapp.utils
 
 import com.dicoding.newsapp.data.local.entity.NewsEntity
 

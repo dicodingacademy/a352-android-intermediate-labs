@@ -71,7 +71,7 @@ dependencies {
 
     //special testing
     testImplementation "androidx.arch.core:core-testing:2.1.0" // InstantTaskExecutorRule
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1" //TestCoroutineDispatcher
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1" //TestDispatcher
 
     //special instrumentation testing
     androidTestImplementation "androidx.arch.core:core-testing:2.1.0" // InstantTaskExecutorRule
@@ -84,6 +84,7 @@ dependencies {
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:4.9.3"
     androidTestImplementation "com.squareup.okhttp3:okhttp-tls:4.9.3"
     implementation 'androidx.test.espresso:espresso-idling-resource:3.4.0'
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1" //TestDispatcher
 
     //room
     implementation "androidx.room:room-runtime:2.4.2"

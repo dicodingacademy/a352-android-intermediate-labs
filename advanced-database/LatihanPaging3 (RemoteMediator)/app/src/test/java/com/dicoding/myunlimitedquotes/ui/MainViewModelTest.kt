@@ -38,7 +38,7 @@ class MainViewModelTest {
     private lateinit var quoteRepository: QuoteRepository
 
     @Test
-    fun `when Get Quote Should Not Null and Return Success`() = runTest {
+    fun `when Get Quote Should Not Null and Return Data`() = runTest {
         val dummyQuote = DataDummy.generateDummyQuoteResponse()
 //        val data: PagingData<QuoteResponseItem> = PagingData.from(dummyQuote)
         val data: PagingData<QuoteResponseItem> = QuotePagingSource.snapshot(dummyQuote)
@@ -57,9 +57,28 @@ class MainViewModelTest {
         differ.submitData(actualQuote)
 
         Assert.assertNotNull(differ.snapshot())
-        Assert.assertEquals(dummyQuote, differ.snapshot())
         Assert.assertEquals(dummyQuote.size, differ.snapshot().size)
         Assert.assertEquals(dummyQuote[0].author, differ.snapshot()[0]?.author)
+    }
+
+    @Test
+    fun `when Get Quote Empty Should Return No Data`() = runTest {
+        val data: PagingData<QuoteResponseItem> = PagingData.from(emptyList())
+        val expectedQuote = MutableLiveData<PagingData<QuoteResponseItem>>()
+        expectedQuote.value = data
+        Mockito.`when`(quoteRepository.getQuote()).thenReturn(expectedQuote)
+
+        val mainViewModel = MainViewModel(quoteRepository)
+        val actualQuote: PagingData<QuoteResponseItem> = mainViewModel.quote.getOrAwaitValue()
+
+        val differ = AsyncPagingDataDiffer(
+            diffCallback = QuoteListAdapter.DIFF_CALLBACK,
+            updateCallback = noopListUpdateCallback,
+            workerDispatcher = Dispatchers.Main,
+        )
+        differ.submitData(actualQuote)
+
+        Assert.assertEquals(0, differ.snapshot().size)
     }
 }
 

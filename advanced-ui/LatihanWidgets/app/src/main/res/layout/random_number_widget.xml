@@ -6,39 +6,29 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:orientation="horizontal"
-        android:padding="@dimen/widget_margin"
-        android:weightSum="9">
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:padding="16dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/dicoding_logo_full" />
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/appwidget_text"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="2dp"
-            android:layout_weight="3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center"
             android:contentDescription="@string/appwidget_text"
-            android:gravity="center"
             android:text="@string/random"
-            android:textColor="#ffffff"
-            android:textSize="15sp"
+            android:textSize="24sp"
             android:textStyle="bold|italic" />
+
         <Button
             android:id="@+id/btn_click"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="3"
-            android:text="@string/generate"
-            android:textColor="@android:color/white" />
+            android:layout_weight="1"
+            android:text="@string/generate" />
     </LinearLayout>
 
 </RelativeLayout>

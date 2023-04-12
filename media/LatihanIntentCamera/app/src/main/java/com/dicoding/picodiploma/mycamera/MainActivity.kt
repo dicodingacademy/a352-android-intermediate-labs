@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
 import androidx.core.content.FileProvider
 import android.content.ContentResolver
+import android.os.Build
 import java.io.*
 
 class MainActivity : AppCompatActivity() {
@@ -101,15 +102,19 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == CAMERA_X_RESULT) {
-            val myFile = it.data?.getSerializableExtra("picture") as File
+            val myFile = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                it.data?.getSerializableExtra("picture", File::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                it.data?.getSerializableExtra("picture")
+            } as? File
+
             val isBackCamera = it.data?.getBooleanExtra("isBackCamera", true) as Boolean
 
-            val result = rotateBitmap(
-                BitmapFactory.decodeFile(myFile.path),
-                isBackCamera
-            )
-
-            binding.previewImageView.setImageBitmap(result)
+            myFile?.let { file ->
+                rotateFile(file, isBackCamera)
+                binding.previewImageView.setImageBitmap(BitmapFactory.decodeFile(file.path))
+            }
         }
     }
 
@@ -120,14 +125,11 @@ class MainActivity : AppCompatActivity() {
         if (it.resultCode == RESULT_OK) {
             val myFile = File(currentPhotoPath)
 
-            val result =  BitmapFactory.decodeFile(myFile.path)
-//            Silakan gunakan kode ini jika mengalami perubahan rotasi
-//            val result = rotateBitmap(
-//                BitmapFactory.decodeFile(myFile.path),
-//                true
-//            )
-
-            binding.previewImageView.setImageBitmap(result)
+            myFile.let { file ->
+//              Silakan gunakan kode ini jika mengalami perubahan rotasi
+//              rotateFile(file)
+                binding.previewImageView.setImageBitmap(BitmapFactory.decodeFile(file.path))
+            }
         }
     }
 

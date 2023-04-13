@@ -6,6 +6,7 @@ import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Toast
@@ -114,16 +115,20 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == CAMERA_X_RESULT) {
-            val myFile = it.data?.getSerializableExtra("picture") as File
+            val myFile = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                it.data?.getSerializableExtra("picture", File::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                it.data?.getSerializableExtra("picture")
+            } as? File
+
             val isBackCamera = it.data?.getBooleanExtra("isBackCamera", true) as Boolean
 
-            getFile = myFile
-            val result = rotateBitmap(
-                BitmapFactory.decodeFile(getFile?.path),
-                isBackCamera
-            )
-
-            binding.previewImageView.setImageBitmap(result)
+            myFile?.let { file ->
+                rotateFile(file, isBackCamera)
+                getFile = file
+                binding.previewImageView.setImageBitmap(BitmapFactory.decodeFile(file.path))
+            }
         }
     }
 
@@ -132,10 +137,12 @@ class MainActivity : AppCompatActivity() {
     ) {
         if (it.resultCode == RESULT_OK) {
             val myFile = File(currentPhotoPath)
-            getFile = myFile
-
-            val result = BitmapFactory.decodeFile(getFile?.path)
-            binding.previewImageView.setImageBitmap(result)
+            myFile.let { file ->
+//              Silakan gunakan kode ini jika mengalami perubahan rotasi
+//              rotateFile(file)
+                getFile = file
+                binding.previewImageView.setImageBitmap(BitmapFactory.decodeFile(file.path))
+            }
         }
     }
 
@@ -143,13 +150,13 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
-            val selectedImg: Uri = result.data?.data as Uri
+            val selectedImg = result.data?.data as Uri
 
-            val myFile = uriToFile(selectedImg, this@MainActivity)
-
-            getFile = myFile
-
-            binding.previewImageView.setImageURI(selectedImg)
+            selectedImg.let { uri ->
+                val myFile = uriToFile(uri, this@MainActivity)
+                getFile = myFile
+                binding.previewImageView.setImageURI(uri)
+            }
         }
     }
 

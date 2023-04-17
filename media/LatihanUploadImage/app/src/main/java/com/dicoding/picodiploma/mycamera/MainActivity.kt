@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity() {
             val file = reduceFileImage(getFile as File)
 
             val description = "Ini adalah deksripsi gambar".toRequestBody("text/plain".toMediaType())
-            val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+            val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
             val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
                 "photo",
                 file.name,

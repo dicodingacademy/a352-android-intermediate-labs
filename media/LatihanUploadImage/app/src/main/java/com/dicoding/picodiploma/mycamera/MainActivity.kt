@@ -17,7 +17,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -172,9 +171,10 @@ class MainActivity : AppCompatActivity() {
                 requestImageFile
             )
 
-            val service = ApiConfig().getApiService().uploadImage(imageMultipart, description)
+            val apiService = ApiConfig().getApiService()
+            val uploadImageRequest = apiService.uploadImage(imageMultipart, description)
 
-            service.enqueue(object : Callback<FileUploadResponse> {
+            uploadImageRequest.enqueue(object : Callback<FileUploadResponse> {
                 override fun onResponse(
                     call: Call<FileUploadResponse>,
                     response: Response<FileUploadResponse>

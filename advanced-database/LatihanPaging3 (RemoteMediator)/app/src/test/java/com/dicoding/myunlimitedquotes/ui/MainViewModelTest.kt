@@ -58,7 +58,7 @@ class MainViewModelTest {
 
         Assert.assertNotNull(differ.snapshot())
         Assert.assertEquals(dummyQuote.size, differ.snapshot().size)
-        Assert.assertEquals(dummyQuote[0].author, differ.snapshot()[0]?.author)
+        Assert.assertEquals(dummyQuote[0], differ.snapshot()[0])
     }
 
     @Test

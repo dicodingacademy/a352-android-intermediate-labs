@@ -6,6 +6,8 @@ plugins {
 }
 
 android {
+    namespace 'com.dicoding.myunlimitedquotes'
+
     compileSdk 31
 
     defaultConfig {

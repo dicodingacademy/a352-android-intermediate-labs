@@ -10,7 +10,6 @@
     <string name="message_login_page">Masukkan dulu datamu ya</string>
     <string name="title_login_page">Sudah siap untuk upgrade skill?</string>
     <string name="name">Nama</string>
-    <string name="copyright">© 2021 Dicoding</string>
     <string name="message_main_page">Selamat Belajar di Dicoding.</string>
     <string name="greeting">Halo %1$s,</string>
     <string name="logout">Keluar</string>

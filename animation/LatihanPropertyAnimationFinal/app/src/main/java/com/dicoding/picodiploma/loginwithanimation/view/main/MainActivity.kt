@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
 
         AnimatorSet().apply {
             playSequentially(name, message, logout)
-            startDelay = 500
+            startDelay = 100
         }.start()
     }
 }

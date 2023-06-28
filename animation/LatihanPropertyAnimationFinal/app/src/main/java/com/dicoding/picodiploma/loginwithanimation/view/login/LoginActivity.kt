@@ -116,7 +116,7 @@ class LoginActivity : AppCompatActivity() {
 
         AnimatorSet().apply {
             playSequentially(title, message, emailTextView, emailEditTextLayout, passwordTextView, passwordEditTextLayout, login)
-            startDelay = 500
+            startDelay = 100
         }.start()
     }
 

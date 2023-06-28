@@ -1,4 +1,4 @@
-package com.dicoding.picodiploma.loginwithanimation.model
+package com.dicoding.picodiploma.loginwithanimation.data.pref
 
 data class UserModel(
     val name: String,

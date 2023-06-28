@@ -56,14 +56,14 @@ class MainActivity : AppCompatActivity() {
             ViewModelFactory(UserPreference.getInstance(dataStore))
         )[MainViewModel::class.java]
 
-        mainViewModel.getUser().observe(this, { user ->
-            if (user.isLogin){
+        mainViewModel.getUser().observe(this) { user ->
+            if (user.isLogin) {
                 binding.nameTextView.text = getString(R.string.greeting, user.name)
             } else {
                 startActivity(Intent(this, WelcomeActivity::class.java))
                 finish()
             }
-        })
+        }
     }
 
     private fun setupAction() {

@@ -65,7 +65,7 @@ class SignupActivity : AppCompatActivity() {
                     binding.passwordEditTextLayout.error = "Masukkan password"
                 }
                 else -> {
-                    signupViewModel.saveUser(UserModel(name, email, password, false))
+                    signupViewModel.saveUser(UserModel(name, "sample_token"))
                     AlertDialog.Builder(this).apply {
                         setTitle("Yeah!")
                         setMessage("Akunnya sudah jadi nih. Yuk, login dan belajar coding.")

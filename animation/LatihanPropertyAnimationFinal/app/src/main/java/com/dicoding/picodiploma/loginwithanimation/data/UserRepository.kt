@@ -7,12 +7,13 @@ import kotlinx.coroutines.flow.Flow
 class UserRepository private constructor(
     private val userPreference: UserPreference
 ) {
-    fun getUser(): Flow<UserModel> {
-        return userPreference.getUser()
+
+    suspend fun saveSession(user: UserModel) {
+        userPreference.saveSession(user)
     }
 
-    suspend fun saveUser(user: UserModel) {
-        userPreference.saveUser(user)
+    fun getSession(): Flow<UserModel> {
+        return userPreference.getSession()
     }
 
     suspend fun logout() {

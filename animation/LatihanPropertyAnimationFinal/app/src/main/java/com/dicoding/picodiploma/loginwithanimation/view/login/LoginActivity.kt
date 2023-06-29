@@ -19,7 +19,6 @@ import com.dicoding.picodiploma.loginwithanimation.view.main.MainActivity
 class LoginActivity : AppCompatActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var user: UserModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,17 +49,12 @@ class LoginActivity : AppCompatActivity() {
             this,
             ViewModelFactory.getInstance(application)
         )[LoginViewModel::class.java]
-
-        loginViewModel.getUser().observe(this) { user ->
-            this.user = user
-        }
     }
 
     private fun setupAction() {
         binding.loginButton.setOnClickListener {
             val email = binding.emailEditText.text.toString()
-            val password = binding.passwordEditText.text.toString()
-            loginViewModel.login()
+            loginViewModel.login(UserModel(email, "sample_token"))
             AlertDialog.Builder(this).apply {
                 setTitle("Yeah!")
                 setMessage("Anda berhasil login. Sudah tidak sabar untuk belajar ya?")

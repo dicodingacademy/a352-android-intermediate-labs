@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             ViewModelFactory.getInstance(application)
         )[MainViewModel::class.java]
 
-        mainViewModel.getUser().observe(this) { user ->
+        mainViewModel.getSession().observe(this) { user ->
             if (user.isLogin) {
                 binding.nameTextView.text = getString(R.string.greeting, user.email)
             } else {

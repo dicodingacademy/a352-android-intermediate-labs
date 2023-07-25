@@ -5,10 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import com.dicoding.latihanexoplayer.databinding.ActivityMainBinding
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.util.Util
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -25,18 +24,21 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
+
+        initializePlayer()
+        hideSystemUI()
     }
 
     private var player: ExoPlayer? = null
 
     private fun initializePlayer() {
-        val mediaItem = MediaItem.fromUri(URL_VIDEO_DICODING)
-        val anotherMediaItem = MediaItem.fromUri(URL_AUDIO)
+        val videoItem = MediaItem.Builder().setUri(URL_VIDEO_DICODING).build()
+        val audioItem = MediaItem.Builder().setUri(URL_AUDIO).build()
 
         player = ExoPlayer.Builder(this).build().also { exoPlayer ->
-            viewBinding.videoView.player = exoPlayer
-            exoPlayer.setMediaItem(mediaItem)
-            exoPlayer.addMediaItem(anotherMediaItem)
+            viewBinding.playerView.player = exoPlayer
+            exoPlayer.setMediaItem(videoItem)
+            exoPlayer.addMediaItem(audioItem)
             exoPlayer.prepare()
         }
     }
@@ -46,38 +48,32 @@ class MainActivity : AppCompatActivity() {
         player = null
     }
 
-    public override fun onStart() {
-        super.onStart()
-        if (Util.SDK_INT >= 24) {
-            initializePlayer()
-        }
-    }
-
-    public override fun onResume() {
-        super.onResume()
-        hideSystemUI()
-        if ((Util.SDK_INT < 24 || player == null)) {
-            initializePlayer()
-        }
-    }
-
-    public override fun onPause() {
-        super.onPause()
-        if (Util.SDK_INT < 24) {
-            releasePlayer()
-        }
-    }
-
-    public override fun onStop() {
-        super.onStop()
-        if (Util.SDK_INT >= 24) {
-            releasePlayer()
-        }
-    }
+//    public override fun onStart() {
+//        super.onStart()
+//        initializePlayer()
+//    }
+//
+//    public override fun onResume() {
+//        super.onResume()
+//        hideSystemUI()
+//        if (player == null) {
+//            initializePlayer()
+//        }
+//    }
+//
+//    public override fun onPause() {
+//        super.onPause()
+//        releasePlayer()
+//    }
+//
+//    public override fun onStop() {
+//        super.onStop()
+//        releasePlayer()
+//    }
 
     private fun hideSystemUI() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
-        WindowInsetsControllerCompat(window, viewBinding.videoView).let { controller ->
+        WindowInsetsControllerCompat(window, viewBinding.playerView).let { controller ->
             controller.hide(WindowInsetsCompat.Type.systemBars())
             controller.systemBarsBehavior =
                 WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE

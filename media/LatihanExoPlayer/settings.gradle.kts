@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "LatihanExoPlayer"
-include ':app'
+include(":app")

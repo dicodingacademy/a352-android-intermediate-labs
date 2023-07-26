@@ -23,16 +23,6 @@ class MediaService : Service(), MediaPlayerCallback {
     private var isReady: Boolean = false
     private var mMediaPlayer: MediaPlayer? = null
 
-    companion object {
-        const val ACTION_CREATE = "com.dicoding.picodiploma.mysound.mediaservice.create"
-        const val ACTION_DESTROY = "com.dicoding.picodiploma.mysound.mediaservice.destroy"
-        const val TAG = "MediaService"
-        const val PLAY = 0
-        const val STOP = 1
-        const val CHANNEL_DEFAULT_IMPORTANCE = "Channel_Test"
-        const val ONGOING_NOTIFICATION_ID = 1
-    }
-
     /*
     Ketika kelas service terbentuk, secara otomatis akan memanggil method init()
     */
@@ -51,9 +41,11 @@ class MediaService : Service(), MediaPlayerCallback {
                 ACTION_CREATE -> if (mMediaPlayer == null) {
                     init()
                 }
+
                 ACTION_DESTROY -> if (mMediaPlayer?.isPlaying as Boolean) {
                     stopSelf()
                 }
+
                 else -> {
                     init()
                 }
@@ -94,9 +86,9 @@ class MediaService : Service(), MediaPlayerCallback {
     private fun init() {
         mMediaPlayer = MediaPlayer()
         val attribute = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_MEDIA)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
         mMediaPlayer?.setAudioAttributes(attribute)
         val afd = applicationContext.resources.openRawResourceFd(R.raw.guitar_background)
         try {
@@ -156,19 +148,16 @@ class MediaService : Service(), MediaPlayerCallback {
         val notificationIntent = Intent(this, MainActivity::class.java)
         notificationIntent.flags = Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT
 
-        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        val pendingIntent =
             PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
-        } else {
-            PendingIntent.getActivity(this, 0, notificationIntent, 0)
-        }
 
         val notification = NotificationCompat.Builder(this, CHANNEL_DEFAULT_IMPORTANCE)
-                .setContentTitle("TES1")
-                .setContentText("TES2")
-                .setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentIntent(pendingIntent)
-                .setTicker("TES3")
-                .build()
+            .setContentTitle("TES1")
+            .setContentText("TES2")
+            .setSmallIcon(R.drawable.ic_launcher_background)
+            .setContentIntent(pendingIntent)
+            .setTicker("TES3")
+            .build()
 
         createChannel(CHANNEL_DEFAULT_IMPORTANCE)
 
@@ -177,11 +166,14 @@ class MediaService : Service(), MediaPlayerCallback {
 
     private fun createChannel(CHANNEL_ID: String) {
 
-        val mNotificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val mNotificationManager =
+            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(CHANNEL_ID, "Battery",
-                    NotificationManager.IMPORTANCE_DEFAULT)
+            val channel = NotificationChannel(
+                CHANNEL_ID, "Battery",
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
             channel.setShowBadge(false)
             channel.setSound(null, null)
             mNotificationManager.createNotificationChannel(channel)
@@ -189,7 +181,7 @@ class MediaService : Service(), MediaPlayerCallback {
     }
 
     private fun stopNotif() {
-        stopForeground(false)
+        stopForeground(STOP_FOREGROUND_REMOVE)
     }
 
     /**
@@ -197,9 +189,11 @@ class MediaService : Service(), MediaPlayerCallback {
      */
     private val mMessenger = Messenger(IncomingHandler(this))
 
-    internal class IncomingHandler(playerCallback: MediaPlayerCallback) : Handler(Looper.getMainLooper()) {
+    internal class IncomingHandler(playerCallback: MediaPlayerCallback) :
+        Handler(Looper.getMainLooper()) {
 
-        private val mediaPlayerCallbackWeakReference: WeakReference<MediaPlayerCallback> = WeakReference(playerCallback)
+        private val mediaPlayerCallbackWeakReference: WeakReference<MediaPlayerCallback> =
+            WeakReference(playerCallback)
 
         override fun handleMessage(msg: Message) {
             when (msg.what) {
@@ -208,5 +202,15 @@ class MediaService : Service(), MediaPlayerCallback {
                 else -> super.handleMessage(msg)
             }
         }
+    }
+
+    companion object {
+        const val ACTION_CREATE = "com.dicoding.picodiploma.mysound.mediaservice.create"
+        const val ACTION_DESTROY = "com.dicoding.picodiploma.mysound.mediaservice.destroy"
+        const val TAG = "MediaService"
+        const val PLAY = 0
+        const val STOP = 1
+        const val CHANNEL_DEFAULT_IMPORTANCE = "Channel_Test"
+        const val ONGOING_NOTIFICATION_ID = 1
     }
 }

@@ -1,7 +1,6 @@
 package com.dicoding.latihanexoplayer
 
 import android.content.ComponentName
-import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -16,7 +15,7 @@ import com.google.common.util.concurrent.MoreExecutors
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,14 +37,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
-            val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
-            controllerFuture.addListener(
-                { binding.playerView.player = controllerFuture.get() },
-                MoreExecutors.directExecutor()
-            )
-        }
+        val sessionToken = SessionToken(this, ComponentName(this, PlaybackService::class.java))
+        val controllerFuture = MediaController.Builder(this, sessionToken).buildAsync()
+        controllerFuture.addListener(
+            { binding.playerView.player = controllerFuture.get() },
+            MoreExecutors.directExecutor()
+        )
     }
 
     private fun hideSystemUI() {

@@ -17,7 +17,7 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
 
                 if (intent.action == ACTION_GEOFENCE_EVENT) {
-                    val geofencingEvent = GeofencingEvent.fromIntent(intent)
+                    val geofencingEvent = GeofencingEvent.fromIntent(intent) ?: return
 
                     if (geofencingEvent.hasError()) {
                         val errorMessage = GeofenceStatusCodes.getStatusCodeString(geofencingEvent.errorCode)
@@ -37,12 +37,13 @@ class GeofenceBroadcastReceiver : BroadcastReceiver() {
                             }
 
                         val triggeringGeofences = geofencingEvent.triggeringGeofences
-                        val requestId = triggeringGeofences[0].requestId
+                        triggeringGeofences?.forEach { geofence ->
+                            val geofenceTransitionDetails = "$geofenceTransitionString ${geofence.requestId}"
+                            Log.i(TAG, geofenceTransitionDetails)
 
-                        val geofenceTransitionDetails = "$geofenceTransitionString $requestId"
-                        Log.i(TAG, geofenceTransitionDetails)
+                            sendNotification(context, geofenceTransitionDetails)
+                        }
 
-                        sendNotification(context, geofenceTransitionDetails)
                     } else {
                         val errorMessage = "Invalid transition type : $geofenceTransition"
                         Log.e(TAG, errorMessage)

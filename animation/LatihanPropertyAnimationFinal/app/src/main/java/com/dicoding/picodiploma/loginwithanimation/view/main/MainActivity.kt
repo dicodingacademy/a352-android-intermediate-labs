@@ -2,21 +2,20 @@ package com.dicoding.picodiploma.loginwithanimation.view.main
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
-import com.dicoding.picodiploma.loginwithanimation.R
 import com.dicoding.picodiploma.loginwithanimation.databinding.ActivityMainBinding
 import com.dicoding.picodiploma.loginwithanimation.view.ViewModelFactory
-import com.dicoding.picodiploma.loginwithanimation.view.welcome.WelcomeActivity
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var mainViewModel: MainViewModel
+    private val viewModel by viewModels<MainViewModel> {
+        ViewModelFactory.getInstance(this)
+    }
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +24,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupView()
-        setupViewModel()
         setupAction()
         playAnimation()
     }
@@ -43,25 +41,9 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
     }
 
-    private fun setupViewModel() {
-        mainViewModel = ViewModelProvider(
-            this,
-            ViewModelFactory.getInstance(application)
-        )[MainViewModel::class.java]
-
-        mainViewModel.getSession().observe(this) { user ->
-            if (user.isLogin) {
-                binding.nameTextView.text = getString(R.string.greeting, user.email)
-            } else {
-                startActivity(Intent(this, WelcomeActivity::class.java))
-                finish()
-            }
-        }
-    }
-
     private fun setupAction() {
         binding.logoutButton.setOnClickListener {
-            mainViewModel.logout()
+            viewModel.logout()
         }
     }
 

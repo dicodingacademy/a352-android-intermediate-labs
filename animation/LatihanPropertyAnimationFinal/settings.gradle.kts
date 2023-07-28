@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "My Firebase Chat"
+rootProject.name = "LoginWithAnimation"
 include(":app")

@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "My Firebase Chat"
-include ':app'
+include(":app")

@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "1067668015581-qh00kh895o0nn3haltu4od24avlvug07.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dicoding.myfirebasechat",
+            "certificate_hash": "34f48757f005d7d3f40701b025aa1fce25489124"
+          }
+        },
+        {
           "client_id": "1067668015581-ivnaj4pj6teusllsfgnfcqco69lpv7jd.apps.googleusercontent.com",
           "client_type": 3
         }

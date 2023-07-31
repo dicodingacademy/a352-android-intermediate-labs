@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dicoding.mygeofence">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -11,8 +10,9 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
-        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -21,7 +21,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCkhQg4hMe_EwuOyau9HtHUMzJu-KsCgHY" />
+            android:value="AIzaSyB-urs2QtUTLaSbvkEYA23vb5K1bKT-e_g" />
 
         <activity
             android:name=".MapsActivity"

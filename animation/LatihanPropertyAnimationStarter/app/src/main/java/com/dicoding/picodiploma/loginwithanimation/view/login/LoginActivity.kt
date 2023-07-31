@@ -1,29 +1,23 @@
 package com.dicoding.picodiploma.loginwithanimation.view.login
 
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
-import androidx.lifecycle.ViewModelProvider
+import com.dicoding.picodiploma.loginwithanimation.data.pref.UserModel
 import com.dicoding.picodiploma.loginwithanimation.databinding.ActivityLoginBinding
-import com.dicoding.picodiploma.loginwithanimation.model.UserModel
-import com.dicoding.picodiploma.loginwithanimation.model.UserPreference
 import com.dicoding.picodiploma.loginwithanimation.view.ViewModelFactory
 import com.dicoding.picodiploma.loginwithanimation.view.main.MainActivity
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-
 class LoginActivity : AppCompatActivity() {
-    private lateinit var loginViewModel: LoginViewModel
+    private val viewModel by viewModels<LoginViewModel> {
+        ViewModelFactory.getInstance(this)
+    }
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var user: UserModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +25,6 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupView()
-        setupViewModel()
         setupAction()
     }
 
@@ -48,49 +41,21 @@ class LoginActivity : AppCompatActivity() {
         supportActionBar?.hide()
     }
 
-    private fun setupViewModel() {
-        loginViewModel = ViewModelProvider(
-            this,
-            ViewModelFactory(UserPreference.getInstance(dataStore))
-        )[LoginViewModel::class.java]
-
-        loginViewModel.getUser().observe(this, { user ->
-            this.user = user
-        })
-    }
-
     private fun setupAction() {
         binding.loginButton.setOnClickListener {
             val email = binding.emailEditText.text.toString()
-            val password = binding.passwordEditText.text.toString()
-            when {
-                email.isEmpty() -> {
-                    binding.emailEditTextLayout.error = "Masukkan email"
+            viewModel.saveSession(UserModel(email, "sample_token"))
+            AlertDialog.Builder(this).apply {
+                setTitle("Yeah!")
+                setMessage("Anda berhasil login. Sudah tidak sabar untuk belajar ya?")
+                setPositiveButton("Lanjut") { _, _ ->
+                    val intent = Intent(context, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    finish()
                 }
-                password.isEmpty() -> {
-                    binding.passwordEditTextLayout.error = "Masukkan password"
-                }
-                email != user.email -> {
-                    binding.emailEditTextLayout.error = "Email tidak sesuai"
-                }
-                password != user.password -> {
-                    binding.passwordEditTextLayout.error = "Password tidak sesuai"
-                }
-                else -> {
-                    loginViewModel.login()
-                    AlertDialog.Builder(this).apply {
-                        setTitle("Yeah!")
-                        setMessage("Anda berhasil login. Sudah tidak sabar untuk belajar ya?")
-                        setPositiveButton("Lanjut") { _, _ ->
-                            val intent = Intent(context, MainActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-                            startActivity(intent)
-                            finish()
-                        }
-                        create()
-                        show()
-                    }
-                }
+                create()
+                show()
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.dicoding.picodiploma.mymediaplayer
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -7,14 +8,12 @@ import android.content.ServiceConnection
 import android.os.*
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 
 
 class MainActivity : AppCompatActivity() {
-
-    companion object {
-        const val TAG = "MainActivity"
-    }
 
     private var mService: Messenger? = null
 
@@ -36,9 +35,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                Toast.makeText(this, "Notifications permission granted", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Notifications permission rejected", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
 
         val btnPlay = findViewById<Button>(R.id.btn_play)
         val btnStop = findViewById<Button>(R.id.btn_stop)
@@ -109,5 +124,9 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "onPause: ")
+    }
+
+    companion object {
+        const val TAG = "MainActivity"
     }
 }

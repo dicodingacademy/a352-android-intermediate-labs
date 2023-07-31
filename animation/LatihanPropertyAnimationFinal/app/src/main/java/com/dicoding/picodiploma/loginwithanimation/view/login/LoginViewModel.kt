@@ -7,7 +7,7 @@ import com.dicoding.picodiploma.loginwithanimation.data.pref.UserModel
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val repository: UserRepository) : ViewModel() {
-    fun login(user: UserModel) {
+    fun saveSession(user: UserModel) {
         viewModelScope.launch {
             repository.saveSession(user)
         }

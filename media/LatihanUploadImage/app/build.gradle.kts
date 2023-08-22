@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.dicoding.picodiploma.mycamera"
-        minSdk = 21
+        minSdk = 24
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
@@ -53,4 +53,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+    implementation("androidx.exifinterface:exifinterface:1.3.6")
+
 }

@@ -124,9 +124,9 @@ class MainActivity : AppCompatActivity() {
             val isBackCamera = it.data?.getBooleanExtra("isBackCamera", true) as Boolean
 
             myFile?.let { file ->
-                rotateFile(file, isBackCamera)
+//                rotateFile(file, isBackCamera)
                 getFile = file
-                binding.previewImageView.setImageBitmap(BitmapFactory.decodeFile(file.path))
+                binding.previewImageView.setImageBitmap(BitmapFactory.decodeFile(file.path).getRotatedBitmap(file))
             }
         }
     }
@@ -140,7 +140,7 @@ class MainActivity : AppCompatActivity() {
 //              Silakan gunakan kode ini jika mengalami perubahan rotasi
 //              rotateFile(file)
                 getFile = file
-                binding.previewImageView.setImageBitmap(BitmapFactory.decodeFile(file.path))
+                binding.previewImageView.setImageBitmap(BitmapFactory.decodeFile(file.path).getRotatedBitmap(file))
             }
         }
     }

@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -64,11 +65,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startGallery() {
-        val intent = Intent()
-        intent.action = ACTION_GET_CONTENT
-        intent.type = "image/*"
-        val chooser = Intent.createChooser(intent, "Choose a Picture")
-        launcherIntentGallery.launch(chooser)
+        launcherIntentGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
     private fun startTakePhoto() {
@@ -128,16 +125,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val launcherIntentGallery = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val selectedImg = result.data?.data as Uri
-
-            selectedImg.let { uri ->
-                val myFile = uriToFile(uri, this@MainActivity)
-                getFile = myFile
-                binding.previewImageView.setImageURI(uri)
-            }
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            binding.previewImageView.setImageURI(uri)
+            val myFile = uriToFile(uri, this)
+            getFile = myFile
+        } else {
+            Log.d("Photo Picker", "No media selected")
         }
     }
 

@@ -1,17 +1,20 @@
 package com.dicoding.picodiploma.mycamera
 
 import android.Manifest
+import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
 import okhttp3.MediaType.Companion.toMediaType
@@ -29,7 +32,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private var cameraUri: Uri? = null
-    
+
     private var getFile: File? = null
 
     private val requestPermissionLauncher =
@@ -69,13 +72,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTakePhoto() {
-//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//        intent.resolveActivity(packageManager)
-//
-        cameraUri = createCustomTempFile(this).getUriForFile(this)
-//        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri)
-//        launcherIntentCamera.launch(intent)
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            cameraUri = getUriForQAbove(this)
+        } else {
+            cameraUri = createCustomTempFile(this).getUriForFile(this)
+        }
         launcherIntentCamera.launch(cameraUri)
     }
 

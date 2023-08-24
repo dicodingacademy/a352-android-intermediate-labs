@@ -2,12 +2,14 @@ package com.dicoding.picodiploma.mycamera
 
 import android.app.Application
 import android.content.ContentResolver
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Environment
+import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import java.io.*
@@ -41,6 +43,15 @@ fun File.getUriForFile(context: Context): Uri {
     return FileProvider.getUriForFile(
         context, "${BuildConfig.APPLICATION_ID}.fileprovider", this
     )
+}
+
+fun getUriForQAbove(context: Context): Uri? {
+    val contentValues = ContentValues().apply {
+        put(MediaStore.MediaColumns.DISPLAY_NAME, "$timeStamp.jpg")
+        put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+        put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/my_image_mediastore/")
+    }
+    return context.contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
 }
 
 fun rotateFile(file: File, isBackCamera: Boolean = false) {

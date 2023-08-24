@@ -44,7 +44,10 @@ class MainActivity : AppCompatActivity() {
         }
 
     private fun allPermissionsGranted() =
-        ContextCompat.checkSelfPermission(this, REQUIRED_PERMISSION) == PackageManager.PERMISSION_GRANTED
+        ContextCompat.checkSelfPermission(
+            this,
+            REQUIRED_PERMISSION
+        ) == PackageManager.PERMISSION_GRANTED
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,8 +99,10 @@ class MainActivity : AppCompatActivity() {
 
             myFile?.let { file ->
 //                rotateFile(file, isBackCamera)
+                binding.previewImageView.setImageBitmap(
+                    BitmapFactory.decodeFile(file.path).getRotatedBitmap(file)
+                )
                 getFile = file
-                binding.previewImageView.setImageBitmap(BitmapFactory.decodeFile(file.path).getRotatedBitmap(file))
             }
         }
     }
@@ -128,7 +133,8 @@ class MainActivity : AppCompatActivity() {
         if (getFile != null) {
             val file = reduceFileImage(getFile as File)
 
-            val description = "Ini adalah deksripsi gambar".toRequestBody("text/plain".toMediaType())
+            val description =
+                "Ini adalah deksripsi gambar".toRequestBody("text/plain".toMediaType())
             val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
             val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
                 "photo",
@@ -147,18 +153,28 @@ class MainActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         val responseBody = response.body()
                         if (responseBody != null && !responseBody.error) {
-                            Toast.makeText(this@MainActivity, responseBody.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                this@MainActivity,
+                                responseBody.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     } else {
-                        Toast.makeText(this@MainActivity, response.message(), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@MainActivity, response.message(), Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
+
                 override fun onFailure(call: Call<FileUploadResponse>, t: Throwable) {
                     Toast.makeText(this@MainActivity, t.message, Toast.LENGTH_SHORT).show()
                 }
             })
         } else {
-            Toast.makeText(this@MainActivity, "Silakan masukkan berkas gambar terlebih dahulu.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this@MainActivity,
+                "Silakan masukkan berkas gambar terlebih dahulu.",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

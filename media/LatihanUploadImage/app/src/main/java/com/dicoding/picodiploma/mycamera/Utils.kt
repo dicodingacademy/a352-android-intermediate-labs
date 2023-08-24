@@ -8,18 +8,16 @@ import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
 import android.os.Environment
+import androidx.core.content.FileProvider
 import androidx.exifinterface.media.ExifInterface
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-private const val FILENAME_FORMAT = "dd-MMM-yyyy"
+private const val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
 private const val MAXIMAL_SIZE = 1000000
 
-val timeStamp: String = SimpleDateFormat(
-    FILENAME_FORMAT,
-    Locale.US
-).format(System.currentTimeMillis())
+val timeStamp: String = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(Date())
 
 fun createCustomTempFile(context: Context): File {
     val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
@@ -36,6 +34,13 @@ fun createFile(application: Application): File {
     ) mediaDir else application.filesDir
 
     return File(outputDirectory, "$timeStamp.jpg")
+}
+
+fun File.getUriForFile(context: Context): Uri {
+    // content://com.dicoding.picodiploma.mycamera.fileprovider/my_images/20230824_1501311253255012579958221.jpg
+    return FileProvider.getUriForFile(
+        context, "${BuildConfig.APPLICATION_ID}.fileprovider", this
+    )
 }
 
 fun rotateFile(file: File, isBackCamera: Boolean = false) {

@@ -7,14 +7,12 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -29,8 +27,9 @@ import java.io.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var currentPhotoPath: String
 
+    private var cameraUri: Uri? = null
+    
     private var getFile: File? = null
 
     private val requestPermissionLauncher =
@@ -67,19 +66,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTakePhoto() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        intent.resolveActivity(packageManager)
+//        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+//        intent.resolveActivity(packageManager)
+//
+        cameraUri = createCustomTempFile(this).getUriForFile(this)
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraUri)
+//        launcherIntentCamera.launch(intent)
 
-        createCustomTempFile(application).also {
-            val photoURI: Uri = FileProvider.getUriForFile(
-                this@MainActivity,
-                "com.dicoding.picodiploma.mycamera",
-                it
-            )
-            currentPhotoPath = it.absolutePath
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-            launcherIntentCamera.launch(intent)
-        }
+        launcherIntentCamera.launch(cameraUri)
     }
 
     private fun startCameraX() {
@@ -109,15 +103,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val launcherIntentCamera = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        if (it.resultCode == RESULT_OK) {
-            val myFile = File(currentPhotoPath)
-            myFile.let { file ->
-//              Silakan gunakan kode ini jika mengalami perubahan rotasi
-//              rotateFile(file)
-                getFile = file
-                binding.previewImageView.setImageBitmap(BitmapFactory.decodeFile(file.path).getRotatedBitmap(file))
+        ActivityResultContracts.TakePicture()
+    ) { isSuccess ->
+        if (isSuccess) {
+            cameraUri?.let {
+                binding.previewImageView.setImageURI(it)
             }
         }
     }
@@ -175,5 +165,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val CAMERA_X_RESULT = 200
         private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA
+        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
     }
 }

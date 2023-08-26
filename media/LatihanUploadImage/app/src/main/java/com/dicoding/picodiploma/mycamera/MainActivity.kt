@@ -1,21 +1,17 @@
 package com.dicoding.picodiploma.mycamera
 
 import android.Manifest
-import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -72,11 +68,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTakePhoto() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            cameraUri = getUriForQAbove(this)
-        } else {
-            cameraUri = createCustomTempFile(this).getUriForFile(this)
-        }
+        cameraUri = getPhotoFileUri(this)
+        Log.d("CameraURI", "startTakePhoto: $cameraUri")
         launcherIntentCamera.launch(cameraUri)
     }
 
@@ -89,22 +82,16 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == CAMERA_X_RESULT) {
-            val myFile = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                it.data?.getSerializableExtra("picture", File::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                it.data?.getSerializableExtra("picture")
-            } as? File
+            val cameraxUri = it.data?.getStringExtra("picture")?.toUri()
+            showImage(cameraxUri)
 
-            val isBackCamera = it.data?.getBooleanExtra("isBackCamera", true) as Boolean
-
-            myFile?.let { file ->
-//                rotateFile(file, isBackCamera)
-                binding.previewImageView.setImageBitmap(
-                    BitmapFactory.decodeFile(file.path).getRotatedBitmap(file)
-                )
-                getFile = file
-            }
+//            myFile?.let { file ->
+////                rotateFile(file, isBackCamera)
+//                binding.previewImageView.setImageBitmap(
+//                    BitmapFactory.decodeFile(file.path).getRotatedBitmap(file)
+//                )
+//                getFile = file
+//            }
         }
     }
 
@@ -112,9 +99,15 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.TakePicture()
     ) { isSuccess ->
         if (isSuccess) {
-            cameraUri?.let {
-                binding.previewImageView.setImageURI(it)
-            }
+            showImage(cameraUri)
+        }
+    }
+
+    private fun showImage(uri: Uri?) {
+        uri?.let {
+            binding.previewImageView.setImageURI(it)
+            val myFile = uriToFile(it, this)
+            getFile = myFile
         }
     }
 
@@ -122,9 +115,7 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         if (uri != null) {
-            binding.previewImageView.setImageURI(uri)
-            val myFile = uriToFile(uri, this)
-            getFile = myFile
+            showImage(uri)
         } else {
             Log.d("Photo Picker", "No media selected")
         }
@@ -182,6 +173,5 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val CAMERA_X_RESULT = 200
         private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA
-        private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
     }
 }

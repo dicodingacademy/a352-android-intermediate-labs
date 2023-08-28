@@ -58,25 +58,37 @@ class MainActivity : AppCompatActivity() {
             requestPermissionLauncher.launch(REQUIRED_PERMISSION)
         }
 
-        binding.cameraXButton.setOnClickListener { startCameraX() }
-        binding.cameraButton.setOnClickListener { startTakePhoto() }
         binding.galleryButton.setOnClickListener { startGallery() }
+        binding.cameraButton.setOnClickListener { startCamera() }
+        binding.cameraXButton.setOnClickListener { startCameraX() }
         binding.uploadButton.setOnClickListener { uploadImage() }
     }
 
+    private val launcherGallery = registerForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            showImage(uri)
+        } else {
+            Log.d("Photo Picker", "No media selected")
+        }
+    }
+
     private fun startGallery() {
-        launcherIntentGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
-    private fun startTakePhoto() {
+    private val launcherIntentCamera = registerForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { isSuccess ->
+        if (isSuccess) {
+            showImage(cameraUri)
+        }
+    }
+
+    private fun startCamera() {
         cameraUri = getPhotoFileUri(this)
-        Log.d("CameraURI", "startTakePhoto: $cameraUri")
         launcherIntentCamera.launch(cameraUri)
-    }
-
-    private fun startCameraX() {
-        val intent = Intent(this, CameraActivity::class.java)
-        launcherIntentCameraX.launch(intent)
     }
 
     private val launcherIntentCameraX = registerForActivityResult(
@@ -88,29 +100,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val launcherIntentCamera = registerForActivityResult(
-        ActivityResultContracts.TakePicture()
-    ) { isSuccess ->
-        if (isSuccess) {
-            showImage(cameraUri)
-        }
+    private fun startCameraX() {
+        val intent = Intent(this, CameraActivity::class.java)
+        launcherIntentCameraX.launch(intent)
     }
 
     private fun showImage(uri: Uri?) {
         uri?.let {
+            Log.d("Image URI", "showImage: $uri")
             binding.previewImageView.setImageURI(it)
             val myFile = uriToFile(it, this)
             getFile = myFile
-        }
-    }
-
-    private val launcherIntentGallery = registerForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
-    ) { uri: Uri? ->
-        if (uri != null) {
-            showImage(uri)
-        } else {
-            Log.d("Photo Picker", "No media selected")
         }
     }
 

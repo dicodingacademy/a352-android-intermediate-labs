@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import com.dicoding.picodiploma.mycamera.CameraActivity.Companion.CAMERAX_RESULT
 import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -81,8 +82,8 @@ class MainActivity : AppCompatActivity() {
     private val launcherIntentCameraX = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        if (it.resultCode == CAMERA_X_RESULT) {
-            val cameraxUri = it.data?.getStringExtra("picture")?.toUri()
+        if (it.resultCode == CAMERAX_RESULT) {
+            val cameraxUri = it.data?.getStringExtra(CameraActivity.EXTRA_CAMERAX_IMAGE)?.toUri()
             showImage(cameraxUri)
         }
     }
@@ -163,7 +164,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val CAMERA_X_RESULT = 200
         private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA
     }
 }

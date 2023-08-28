@@ -3,6 +3,7 @@ package com.dicoding.picodiploma.mycamera
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.OrientationEventListener
 import android.view.Surface
 import android.view.WindowInsets
@@ -30,7 +31,7 @@ class CameraActivity : AppCompatActivity() {
 
         binding.switchCamera.setOnClickListener {
             cameraSelector =
-                if (cameraSelector.equals(CameraSelector.DEFAULT_BACK_CAMERA)) CameraSelector.DEFAULT_FRONT_CAMERA
+                if (cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) CameraSelector.DEFAULT_FRONT_CAMERA
                 else CameraSelector.DEFAULT_BACK_CAMERA
             startCamera()
         }
@@ -71,6 +72,7 @@ class CameraActivity : AppCompatActivity() {
                     "Gagal memunculkan kamera.",
                     Toast.LENGTH_SHORT
                 ).show()
+                Log.e(TAG, "startCamera: ${exc.message}")
             }
         }, ContextCompat.getMainExecutor(this))
     }
@@ -88,16 +90,18 @@ class CameraActivity : AppCompatActivity() {
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val intent = Intent()
-                    intent.putExtra("picture", output.savedUri.toString())
-                    setResult(MainActivity.CAMERA_X_RESULT, intent)
+                    intent.putExtra(EXTRA_CAMERAX_IMAGE, output.savedUri.toString())
+                    setResult(CAMERAX_RESULT, intent)
                     finish()
                 }
+
                 override fun onError(exc: ImageCaptureException) {
                     Toast.makeText(
                         this@CameraActivity,
-                        "Gagal mengambil gambar. ${exc.message}",
+                        "Gagal mengambil gambar.",
                         Toast.LENGTH_SHORT
                     ).show()
+                    Log.e(TAG, "onError: ${exc.message}")
                 }
             }
         )
@@ -143,5 +147,11 @@ class CameraActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         orientationEventListener.disable()
+    }
+
+    companion object {
+        private const val TAG = "CameraActivity"
+        const val EXTRA_CAMERAX_IMAGE = "CameraX Image"
+        const val CAMERAX_RESULT = 200
     }
 }

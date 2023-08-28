@@ -28,47 +28,19 @@ class CameraActivity : AppCompatActivity() {
         binding = ActivityCameraBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.captureImage.setOnClickListener { takePhoto() }
         binding.switchCamera.setOnClickListener {
             cameraSelector =
                 if (cameraSelector.equals(CameraSelector.DEFAULT_BACK_CAMERA)) CameraSelector.DEFAULT_FRONT_CAMERA
                 else CameraSelector.DEFAULT_BACK_CAMERA
             startCamera()
         }
+        binding.captureImage.setOnClickListener { takePhoto() }
     }
 
     public override fun onResume() {
         super.onResume()
         hideSystemUI()
         startCamera()
-    }
-
-    private fun takePhoto() {
-        val imageCapture = imageCapture ?: return
-
-        val photoFile = createCustomTempFile(application)
-
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-
-        imageCapture.takePicture(
-            outputOptions,
-            ContextCompat.getMainExecutor(this),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val intent = Intent()
-                    intent.putExtra("picture", output.savedUri.toString())
-                    setResult(MainActivity.CAMERA_X_RESULT, intent)
-                    finish()
-                }
-                override fun onError(exc: ImageCaptureException) {
-                    Toast.makeText(
-                        this@CameraActivity,
-                        "Gagal mengambil gambar. ${exc.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        )
     }
 
     private fun startCamera() {
@@ -101,6 +73,34 @@ class CameraActivity : AppCompatActivity() {
                 ).show()
             }
         }, ContextCompat.getMainExecutor(this))
+    }
+
+    private fun takePhoto() {
+        val imageCapture = imageCapture ?: return
+
+        val photoFile = createCustomTempFile(application)
+
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+
+        imageCapture.takePicture(
+            outputOptions,
+            ContextCompat.getMainExecutor(this),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    val intent = Intent()
+                    intent.putExtra("picture", output.savedUri.toString())
+                    setResult(MainActivity.CAMERA_X_RESULT, intent)
+                    finish()
+                }
+                override fun onError(exc: ImageCaptureException) {
+                    Toast.makeText(
+                        this@CameraActivity,
+                        "Gagal mengambil gambar. ${exc.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        )
     }
 
     private fun hideSystemUI() {

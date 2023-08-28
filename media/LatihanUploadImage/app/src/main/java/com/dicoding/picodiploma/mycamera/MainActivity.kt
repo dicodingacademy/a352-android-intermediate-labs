@@ -84,14 +84,6 @@ class MainActivity : AppCompatActivity() {
         if (it.resultCode == CAMERA_X_RESULT) {
             val cameraxUri = it.data?.getStringExtra("picture")?.toUri()
             showImage(cameraxUri)
-
-//            myFile?.let { file ->
-////                rotateFile(file, isBackCamera)
-//                binding.previewImageView.setImageBitmap(
-//                    BitmapFactory.decodeFile(file.path).getRotatedBitmap(file)
-//                )
-//                getFile = file
-//            }
         }
     }
 

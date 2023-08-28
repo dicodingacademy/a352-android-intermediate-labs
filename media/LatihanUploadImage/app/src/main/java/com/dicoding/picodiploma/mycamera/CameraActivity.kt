@@ -48,22 +48,8 @@ class CameraActivity : AppCompatActivity() {
 
         val photoFile = createCustomTempFile(application)
 
-//        val name = SimpleDateFormat(FILENAME_FORMAT, Locale.US)
-//            .format(System.currentTimeMillis())
-//        val contentValues = ContentValues().apply {
-//            put(MediaStore.MediaColumns.DISPLAY_NAME, name)
-//            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-//            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
-//                put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/CameraX-Image")
-//            }
-//        }
-
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(
-            photoFile
-//            contentResolver,
-//            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-//            contentValues
-        ).build()
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+        
         imageCapture.takePicture(
             outputOptions,
             ContextCompat.getMainExecutor(this),

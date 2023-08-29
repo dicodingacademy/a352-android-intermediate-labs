@@ -36,7 +36,7 @@ android {
 }
 
 dependencies {
-    val camerax_version = "1.2.3"
+    val cameraxVersion = "1.2.3"
 
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -46,14 +46,18 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
-    implementation("androidx.camera:camera-camera2:$camerax_version")
-    implementation("androidx.camera:camera-lifecycle:$camerax_version")
-    implementation("androidx.camera:camera-view:$camerax_version")
+    implementation("androidx.camera:camera-camera2:$cameraxVersion")
+    implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
+    implementation("androidx.camera:camera-view:$cameraxVersion")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     implementation("androidx.exifinterface:exifinterface:1.3.6")
+
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.6.1")
+    implementation("androidx.activity:activity-ktx:1.7.2")
 
 }

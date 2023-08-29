@@ -6,28 +6,29 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import com.dicoding.picodiploma.mycamera.CameraActivity.Companion.CAMERAX_RESULT
+import com.dicoding.picodiploma.mycamera.data.ResultState
 import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-
+import com.dicoding.picodiploma.mycamera.ui.MainViewModel
+import com.dicoding.picodiploma.mycamera.ui.ViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
     private var currentImageUri: Uri? = null
+
+    private val viewModel by viewModels<MainViewModel> {
+        ViewModelFactory.getInstance()
+    }
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -113,50 +114,58 @@ class MainActivity : AppCompatActivity() {
     private fun uploadImage() {
         currentImageUri?.let { uri ->
             val imageFile = uriToFile(uri, this).reduceFileImage()
+            val description = "Ini adalah deksripsi gambar"
 
-            val description =
-                "Ini adalah deksripsi gambar".toRequestBody("text/plain".toMediaType())
-            val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
-            val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
-                "photo",
-                imageFile.name,
-                requestImageFile
-            )
+//            val requestBody = description.toRequestBody("text/plain".toMediaType())
+//            val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
+//            val multipartBody = MultipartBody.Part.createFormData(
+//                "photo",
+//                imageFile.name,
+//                requestImageFile
+//            )
+//            showLoading(true)
+//            lifecycleScope.launch {
+//                try {
+//                    val apiService = ApiConfig.getApiService()
+//                    val successResponse = apiService.uploadImage(multipartBody, requestBody)
+//                    showToast(successResponse.message)
+//                    showLoading(false)
+//                } catch (e: HttpException) {
+//                    val errorBody = e.response()?.errorBody()?.string()
+//                    val errorResponse = Gson().fromJson(errorBody, FileUploadResponse::class.java)
+//                    showToast(errorResponse.message)
+//                    showLoading(false)
+//                }
+//            }
 
-            val apiService = ApiConfig().getApiService()
-            val uploadImageRequest = apiService.uploadImage(imageMultipart, description)
-
-            uploadImageRequest.enqueue(object : Callback<FileUploadResponse> {
-                override fun onResponse(
-                    call: Call<FileUploadResponse>,
-                    response: Response<FileUploadResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        if (responseBody != null && !responseBody.error) {
-                            Toast.makeText(
-                                this@MainActivity,
-                                responseBody.message,
-                                Toast.LENGTH_SHORT
-                            ).show()
+            viewModel.uploadImage(imageFile, description).observe(this) { result ->
+                if (result != null) {
+                    when (result) {
+                        is ResultState.Loading -> {
+                            showLoading(true)
                         }
-                    } else {
-                        Toast.makeText(this@MainActivity, response.message(), Toast.LENGTH_SHORT)
-                            .show()
+
+                        is ResultState.Success -> {
+                            showToast(result.data.message)
+                            showLoading(false)
+                        }
+
+                        is ResultState.Error -> {
+                            showToast(result.error)
+                            showLoading(false)
+                        }
                     }
                 }
+            }
+        } ?: showToast(getString(R.string.empty_image_warning))
+    }
 
-                override fun onFailure(call: Call<FileUploadResponse>, t: Throwable) {
-                    Toast.makeText(this@MainActivity, t.message, Toast.LENGTH_SHORT).show()
-                }
-            })
-        } ?: {
-            Toast.makeText(
-                this@MainActivity,
-                "Silakan masukkan berkas gambar terlebih dahulu.",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     companion object {

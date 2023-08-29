@@ -1,4 +1,4 @@
-package com.dicoding.picodiploma.mycamera.di
+package com.dicoding.picodiploma.mycamera.data.di
 
 import com.dicoding.picodiploma.mycamera.data.UploadRepository
 import com.dicoding.picodiploma.mycamera.data.api.ApiConfig

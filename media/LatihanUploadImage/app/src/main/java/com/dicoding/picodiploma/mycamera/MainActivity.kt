@@ -17,8 +17,6 @@ import androidx.core.net.toUri
 import com.dicoding.picodiploma.mycamera.CameraActivity.Companion.CAMERAX_RESULT
 import com.dicoding.picodiploma.mycamera.data.ResultState
 import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
-import com.dicoding.picodiploma.mycamera.ui.MainViewModel
-import com.dicoding.picodiploma.mycamera.ui.ViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 

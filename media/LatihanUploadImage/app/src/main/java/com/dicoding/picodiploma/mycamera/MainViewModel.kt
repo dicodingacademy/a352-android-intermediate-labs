@@ -1,4 +1,4 @@
-package com.dicoding.picodiploma.mycamera.ui
+package com.dicoding.picodiploma.mycamera
 
 import androidx.lifecycle.ViewModel
 import com.dicoding.picodiploma.mycamera.data.UploadRepository

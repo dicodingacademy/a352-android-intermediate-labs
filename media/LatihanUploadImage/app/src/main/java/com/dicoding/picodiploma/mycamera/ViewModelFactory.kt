@@ -1,9 +1,9 @@
-package com.dicoding.picodiploma.mycamera.ui
+package com.dicoding.picodiploma.mycamera
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.dicoding.picodiploma.mycamera.data.UploadRepository
-import com.dicoding.picodiploma.mycamera.di.Injection
+import com.dicoding.picodiploma.mycamera.data.di.Injection
 
 class ViewModelFactory(private val repository: UploadRepository) :
     ViewModelProvider.NewInstanceFactory() {

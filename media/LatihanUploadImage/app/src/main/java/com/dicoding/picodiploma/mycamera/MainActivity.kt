@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private var cameraUri: Uri? = null
+    private var currentImageUri: Uri? = null
 
     private var getFile: File? = null
 
@@ -68,7 +68,8 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         if (uri != null) {
-            showImage(uri)
+            currentImageUri = uri
+            showImage()
         } else {
             Log.d("Photo Picker", "No media selected")
         }
@@ -82,21 +83,21 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.TakePicture()
     ) { isSuccess ->
         if (isSuccess) {
-            showImage(cameraUri)
+            showImage()
         }
     }
 
     private fun startCamera() {
-        cameraUri = getPhotoFileUri(this)
-        launcherIntentCamera.launch(cameraUri)
+        currentImageUri = getPhotoFileUri(this)
+        launcherIntentCamera.launch(currentImageUri)
     }
 
     private val launcherIntentCameraX = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (it.resultCode == CAMERAX_RESULT) {
-            val cameraxUri = it.data?.getStringExtra(CameraActivity.EXTRA_CAMERAX_IMAGE)?.toUri()
-            showImage(cameraxUri)
+            currentImageUri = it.data?.getStringExtra(CameraActivity.EXTRA_CAMERAX_IMAGE)?.toUri()
+            showImage()
         }
     }
 
@@ -105,9 +106,9 @@ class MainActivity : AppCompatActivity() {
         launcherIntentCameraX.launch(intent)
     }
 
-    private fun showImage(uri: Uri?) {
-        uri?.let {
-            Log.d("Image URI", "showImage: $uri")
+    private fun showImage() {
+        currentImageUri?.let {
+            Log.d("Image URI", "showImage: $it")
             binding.previewImageView.setImageURI(it)
             val myFile = uriToFile(it, this)
             getFile = myFile

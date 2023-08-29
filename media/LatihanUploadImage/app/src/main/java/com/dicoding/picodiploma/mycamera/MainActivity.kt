@@ -21,7 +21,6 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -29,8 +28,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private var currentImageUri: Uri? = null
-
-    private var getFile: File? = null
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -64,6 +61,10 @@ class MainActivity : AppCompatActivity() {
         binding.uploadButton.setOnClickListener { uploadImage() }
     }
 
+    private fun startGallery() {
+        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
     private val launcherGallery = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
@@ -75,8 +76,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startGallery() {
-        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    private fun startCamera() {
+        currentImageUri = getImageUri(this)
+        launcherIntentCamera.launch(currentImageUri)
     }
 
     private val launcherIntentCamera = registerForActivityResult(
@@ -87,9 +89,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startCamera() {
-        currentImageUri = getPhotoFileUri(this)
-        launcherIntentCamera.launch(currentImageUri)
+    private fun startCameraX() {
+        val intent = Intent(this, CameraActivity::class.java)
+        launcherIntentCameraX.launch(intent)
     }
 
     private val launcherIntentCameraX = registerForActivityResult(
@@ -101,30 +103,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun startCameraX() {
-        val intent = Intent(this, CameraActivity::class.java)
-        launcherIntentCameraX.launch(intent)
-    }
-
     private fun showImage() {
         currentImageUri?.let {
             Log.d("Image URI", "showImage: $it")
             binding.previewImageView.setImageURI(it)
-            val myFile = uriToFile(it, this)
-            getFile = myFile
         }
     }
 
     private fun uploadImage() {
-        if (getFile != null) {
-            val file = reduceFileImage(getFile as File)
+        currentImageUri?.let { uri ->
+            val imageFile = uriToFile(uri, this).reduceFileImage()
 
             val description =
                 "Ini adalah deksripsi gambar".toRequestBody("text/plain".toMediaType())
-            val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
+            val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
             val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
                 "photo",
-                file.name,
+                imageFile.name,
                 requestImageFile
             )
 
@@ -155,7 +150,7 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this@MainActivity, t.message, Toast.LENGTH_SHORT).show()
                 }
             })
-        } else {
+        } ?: {
             Toast.makeText(
                 this@MainActivity,
                 "Silakan masukkan berkas gambar terlebih dahulu.",

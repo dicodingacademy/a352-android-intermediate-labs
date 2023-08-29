@@ -58,14 +58,12 @@ private fun getUriForPreQ(context: Context): Uri {
 }
 
 fun uriToFile(selectedImg: Uri, context: Context): File {
-    val contentResolver: ContentResolver = context.contentResolver
     val myFile = createCustomTempFile(context)
-
-    val inputStream = contentResolver.openInputStream(selectedImg) as InputStream
-    val outputStream: OutputStream = FileOutputStream(myFile)
-    val buf = ByteArray(1024)
+    val inputStream = context.contentResolver.openInputStream(selectedImg) as InputStream
+    val outputStream = FileOutputStream(myFile)
+    val buffer = ByteArray(1024)
     var len: Int
-    while (inputStream.read(buf).also { len = it } > 0) outputStream.write(buf, 0, len)
+    while (inputStream.read(buffer).also { len = it } > 0) outputStream.write(buffer, 0, len)
     outputStream.close()
     inputStream.close()
 
@@ -101,10 +99,8 @@ fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
 
 fun reduceFileImage(file: File): File {
     val bitmap = BitmapFactory.decodeFile(file.path).getRotatedBitmap(file)
-
     var compressQuality = 100
     var streamLength: Int
-
     do {
         val bmpStream = ByteArrayOutputStream()
         bitmap?.compress(Bitmap.CompressFormat.JPEG, compressQuality, bmpStream)
@@ -112,8 +108,6 @@ fun reduceFileImage(file: File): File {
         streamLength = bmpPicByteArray.size
         compressQuality -= 5
     } while (streamLength > MAXIMAL_SIZE)
-
     bitmap?.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(file))
-
     return file
 }

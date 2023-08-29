@@ -6,7 +6,7 @@ import retrofit2.http.*
 
 interface ApiService {
     @Multipart
-    @POST("/v1/stories/guest")
+    @POST("stories/guest")
     suspend fun uploadImage(
         @Part file: MultipartBody.Part,
         @Part("description") description: RequestBody,

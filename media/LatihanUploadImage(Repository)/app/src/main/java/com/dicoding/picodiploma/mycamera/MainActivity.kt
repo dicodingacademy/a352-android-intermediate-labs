@@ -112,8 +112,10 @@ class MainActivity : AppCompatActivity() {
     private fun uploadImage() {
         currentImageUri?.let { uri ->
             val imageFile = uriToFile(uri, this).reduceFileImage()
+            Log.d("Image File", "showImage: ${imageFile.path}")
             val description = "Ini adalah deksripsi gambar"
 
+//            showLoading(true)
 //            val requestBody = description.toRequestBody("text/plain".toMediaType())
 //            val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
 //            val multipartBody = MultipartBody.Part.createFormData(
@@ -121,7 +123,6 @@ class MainActivity : AppCompatActivity() {
 //                imageFile.name,
 //                requestImageFile
 //            )
-//            showLoading(true)
 //            lifecycleScope.launch {
 //                try {
 //                    val apiService = ApiConfig.getApiService()

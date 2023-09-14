@@ -1,48 +1,51 @@
 package com.dicoding.picodiploma.mycamera
 
-import android.app.Application
+import android.content.ContentValues
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
+import android.net.Uri
+import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
+import androidx.core.content.FileProvider
 import java.io.File
-import java.io.FileOutputStream
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
-private const val FILENAME_FORMAT = "dd-MMM-yyyy"
+private const val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
+private val timeStamp: String = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(Date())
 
-val timeStamp: String = SimpleDateFormat(
-    FILENAME_FORMAT,
-    Locale.US
-).format(System.currentTimeMillis())
-
-fun createTempFile(context: Context): File {
-    val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-    return File.createTempFile(timeStamp, ".jpg", storageDir)
+fun getImageUri(context: Context): Uri {
+    var uri: Uri? = null
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        val contentValues = ContentValues().apply {
+            put(MediaStore.MediaColumns.DISPLAY_NAME, "$timeStamp.jpg")
+            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
+            put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/MyCamera/")
+        }
+        uri = context.contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        )
+        // content://media/external/images/media/1000000062
+        // storage/emulated/0/Pictures/MyCamera/20230825_155303.jpg
+    }
+    return uri ?: getImageUriForPreQ(context)
 }
 
-fun createFile(application: Application): File {
-    val mediaDir = application.externalMediaDirs.firstOrNull()?.let {
-        File(it, application.resources.getString(R.string.app_name)).apply { mkdirs() }
-    }
-
-    val outputDirectory = if (
-        mediaDir != null && mediaDir.exists()
-    ) mediaDir else application.filesDir
-
-    return File(outputDirectory, "$timeStamp.jpg")
+private fun getImageUriForPreQ(context: Context): Uri {
+    val filesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    val imageFile = File(filesDir, "/MyCamera/$timeStamp.jpg")
+    if (imageFile.parentFile?.exists() == false) imageFile.parentFile?.mkdir()
+    return FileProvider.getUriForFile(
+        context,
+        "${BuildConfig.APPLICATION_ID}.fileprovider",
+        imageFile
+    )
+    //content://com.dicoding.picodiploma.mycamera.fileprovider/my_images/MyCamera/20230825_133659.jpg
 }
 
-fun rotateFile(file: File, isBackCamera: Boolean = false) {
-    val matrix = Matrix()
-    val bitmap = BitmapFactory.decodeFile(file.path)
-    val rotation = if (isBackCamera) 90f else -90f
-    matrix.postRotate(rotation)
-    if (!isBackCamera) {
-        matrix.postScale(-1f, 1f, bitmap.width / 2f, bitmap.height / 2f)
-    }
-    val result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-    result.compress(Bitmap.CompressFormat.JPEG, 100, FileOutputStream(file))
+fun createCustomTempFile(context: Context): File {
+    val filesDir = context.externalCacheDir
+    return File.createTempFile(timeStamp, ".jpg", filesDir)
 }

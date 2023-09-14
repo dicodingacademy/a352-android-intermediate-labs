@@ -2,65 +2,52 @@ package com.dicoding.picodiploma.mycamera
 
 import android.Manifest
 import android.content.Intent
-import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
+import android.util.Log
+import android.view.View
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
+import androidx.core.net.toUri
+import androidx.lifecycle.lifecycleScope
+import com.dicoding.picodiploma.mycamera.CameraActivity.Companion.CAMERAX_RESULT
+import com.dicoding.picodiploma.mycamera.data.api.ApiConfig
+import com.dicoding.picodiploma.mycamera.data.api.FileUploadResponse
 import com.dicoding.picodiploma.mycamera.databinding.ActivityMainBinding
+import com.google.gson.Gson
+import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.io.*
-
+import retrofit2.HttpException
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var currentPhotoPath: String
 
-    private var getFile: File? = null
+    private var currentImageUri: Uri? = null
 
-    companion object {
-        const val CAMERA_X_RESULT = 200
-
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
-        private const val REQUEST_CODE_PERMISSIONS = 10
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (!allPermissionsGranted()) {
-                Toast.makeText(
-                    this,
-                    "Tidak mendapatkan permission.",
-                    Toast.LENGTH_SHORT
-                ).show()
-                finish()
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                Toast.makeText(this, "Permission request granted", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(this, "Permission request denied", Toast.LENGTH_LONG).show()
             }
         }
-    }
 
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(baseContext, it) == PackageManager.PERMISSION_GRANTED
-    }
+    private fun allPermissionsGranted() =
+        ContextCompat.checkSelfPermission(
+            this,
+            REQUIRED_PERMISSION
+        ) == PackageManager.PERMISSION_GRANTED
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,40 +55,40 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         if (!allPermissionsGranted()) {
-            ActivityCompat.requestPermissions(
-                this,
-                REQUIRED_PERMISSIONS,
-                REQUEST_CODE_PERMISSIONS
-            )
+            requestPermissionLauncher.launch(REQUIRED_PERMISSION)
         }
 
-        binding.cameraXButton.setOnClickListener { startCameraX() }
-        binding.cameraButton.setOnClickListener { startTakePhoto() }
         binding.galleryButton.setOnClickListener { startGallery() }
+        binding.cameraButton.setOnClickListener { startCamera() }
+        binding.cameraXButton.setOnClickListener { startCameraX() }
         binding.uploadButton.setOnClickListener { uploadImage() }
     }
 
     private fun startGallery() {
-        val intent = Intent()
-        intent.action = ACTION_GET_CONTENT
-        intent.type = "image/*"
-        val chooser = Intent.createChooser(intent, "Choose a Picture")
-        launcherIntentGallery.launch(chooser)
+        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
-    private fun startTakePhoto() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        intent.resolveActivity(packageManager)
+    private val launcherGallery = registerForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            currentImageUri = uri
+            showImage()
+        } else {
+            Log.d("Photo Picker", "No media selected")
+        }
+    }
 
-        createCustomTempFile(application).also {
-            val photoURI: Uri = FileProvider.getUriForFile(
-                this@MainActivity,
-                "com.dicoding.picodiploma.mycamera",
-                it
-            )
-            currentPhotoPath = it.absolutePath
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-            launcherIntentCamera.launch(intent)
+    private fun startCamera() {
+        currentImageUri = getImageUri(this)
+        launcherIntentCamera.launch(currentImageUri)
+    }
+
+    private val launcherIntentCamera = registerForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { isSuccess ->
+        if (isSuccess) {
+            showImage()
         }
     }
 
@@ -113,88 +100,59 @@ class MainActivity : AppCompatActivity() {
     private val launcherIntentCameraX = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
-        if (it.resultCode == CAMERA_X_RESULT) {
-            val myFile = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                it.data?.getSerializableExtra("picture", File::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                it.data?.getSerializableExtra("picture")
-            } as? File
-
-            val isBackCamera = it.data?.getBooleanExtra("isBackCamera", true) as Boolean
-
-            myFile?.let { file ->
-                rotateFile(file, isBackCamera)
-                getFile = file
-                binding.previewImageView.setImageBitmap(BitmapFactory.decodeFile(file.path))
-            }
+        if (it.resultCode == CAMERAX_RESULT) {
+            currentImageUri = it.data?.getStringExtra(CameraActivity.EXTRA_CAMERAX_IMAGE)?.toUri()
+            showImage()
         }
     }
 
-    private val launcherIntentCamera = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-        if (it.resultCode == RESULT_OK) {
-            val myFile = File(currentPhotoPath)
-            myFile.let { file ->
-//              Silakan gunakan kode ini jika mengalami perubahan rotasi
-//              rotateFile(file)
-                getFile = file
-                binding.previewImageView.setImageBitmap(BitmapFactory.decodeFile(file.path))
-            }
-        }
-    }
-
-    private val launcherIntentGallery = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val selectedImg = result.data?.data as Uri
-
-            selectedImg.let { uri ->
-                val myFile = uriToFile(uri, this@MainActivity)
-                getFile = myFile
-                binding.previewImageView.setImageURI(uri)
-            }
+    private fun showImage() {
+        currentImageUri?.let {
+            Log.d("Image URI", "showImage: $it")
+            binding.previewImageView.setImageURI(it)
         }
     }
 
     private fun uploadImage() {
-        if (getFile != null) {
-            val file = reduceFileImage(getFile as File)
+        currentImageUri?.let { uri ->
+            val imageFile = uriToFile(uri, this).reduceFileImage()
+            Log.d("Image File", "showImage: ${imageFile.path}")
+            val description = "Ini adalah deksripsi gambar"
 
-            val description = "Ini adalah deksripsi gambar".toRequestBody("text/plain".toMediaType())
-            val requestImageFile = file.asRequestBody("image/jpeg".toMediaType())
-            val imageMultipart: MultipartBody.Part = MultipartBody.Part.createFormData(
+            showLoading(true)
+
+            val requestBody = description.toRequestBody("text/plain".toMediaType())
+            val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
+            val multipartBody = MultipartBody.Part.createFormData(
                 "photo",
-                file.name,
+                imageFile.name,
                 requestImageFile
             )
-
-            val apiService = ApiConfig().getApiService()
-            val uploadImageRequest = apiService.uploadImage(imageMultipart, description)
-
-            uploadImageRequest.enqueue(object : Callback<FileUploadResponse> {
-                override fun onResponse(
-                    call: Call<FileUploadResponse>,
-                    response: Response<FileUploadResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        val responseBody = response.body()
-                        if (responseBody != null && !responseBody.error) {
-                            Toast.makeText(this@MainActivity, responseBody.message, Toast.LENGTH_SHORT).show()
-                        }
-                    } else {
-                        Toast.makeText(this@MainActivity, response.message(), Toast.LENGTH_SHORT).show()
-                    }
+            lifecycleScope.launch {
+                try {
+                    val apiService = ApiConfig.getApiService()
+                    val successResponse = apiService.uploadImage(multipartBody, requestBody)
+                    showToast(successResponse.message)
+                    showLoading(false)
+                } catch (e: HttpException) {
+                    val errorBody = e.response()?.errorBody()?.string()
+                    val errorResponse = Gson().fromJson(errorBody, FileUploadResponse::class.java)
+                    showToast(errorResponse.message)
+                    showLoading(false)
                 }
-                override fun onFailure(call: Call<FileUploadResponse>, t: Throwable) {
-                    Toast.makeText(this@MainActivity, t.message, Toast.LENGTH_SHORT).show()
-                }
-            })
-        } else {
-            Toast.makeText(this@MainActivity, "Silakan masukkan berkas gambar terlebih dahulu.", Toast.LENGTH_SHORT).show()
-        }
+            }
+        } ?: showToast(getString(R.string.empty_image_warning))
     }
 
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    companion object {
+        private const val REQUIRED_PERMISSION = Manifest.permission.CAMERA
+    }
 }

@@ -2,10 +2,10 @@ package com.dicoding.newsapp.ui.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import com.dicoding.newsapp.DataDummy
+import com.dicoding.newsapp.utils.DataDummy
 import com.dicoding.newsapp.MainDispatcherRule
 import com.dicoding.newsapp.data.NewsRepository
-import com.dicoding.newsapp.getOrAwaitValue
+import com.dicoding.newsapp.utils.getOrAwaitValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before

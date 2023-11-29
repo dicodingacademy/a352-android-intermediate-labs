@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Detail Produk</string>
+    <string name="buy">Beli Sekarang!</string>
+
+    <string name="name">Sepatu Lari</string>
+    <string name="store">Toko Dicoding</string>
+    <string name="size">42</string>
+    <string name="color">Coklat</string>
+    <string name="description">Sepatu lari kece edisi terbatas. Memakai sepatu ini akan meningkatkan pemahamanmu ketika belajar coding.\n\nBarang selalu ada. Tersedia berbagai ukuran dan warna. Silakan langsung order!</string>
+
+    <string name="price">200000.00</string>
+    <string name="rating">4.5</string>
+    <string name="date">5/8/2021</string>
+    <string name="countRating">1249</string>
+
+    <string name="dateFormat">Diunggah pada %1$s</string>
+    <string name="ratingFormat">%1$s (%2$s)</string>
+
+</resources>

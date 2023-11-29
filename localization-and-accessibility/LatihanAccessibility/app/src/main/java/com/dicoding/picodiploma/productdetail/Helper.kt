@@ -1,4 +1,4 @@
-package com.dicoding.picodiploma.productdetail.helper
+package com.dicoding.picodiploma.productdetail
 
 import java.text.DateFormat
 import java.text.NumberFormat

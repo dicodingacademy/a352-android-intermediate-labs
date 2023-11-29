@@ -8,9 +8,6 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.dicoding.picodiploma.productdetail.databinding.ActivityMainBinding
-import com.dicoding.picodiploma.productdetail.helper.withCurrencyFormat
-import com.dicoding.picodiploma.productdetail.helper.withDateFormat
-import com.dicoding.picodiploma.productdetail.helper.withNumberingFormat
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

@@ -1,8 +1,10 @@
 package com.dicoding.picodiploma.myserviceapp
 
 import android.app.*
+import android.app.Notification.FOREGROUND_SERVICE_IMMEDIATE
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
@@ -28,7 +30,13 @@ class MyForegroundService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val notification = buildNotification()
 
-        startForeground(NOTIFICATION_ID, notification)
+        // startForeground(NOTIFICATION_ID, notification)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(NOTIFICATION_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE)
+        } else {
+            startForeground(NOTIFICATION_ID, notification)
+        }
 
         Log.d(TAG, "Service dijalankan...")
         serviceScope.launch {
@@ -36,7 +44,11 @@ class MyForegroundService : Service() {
                 delay(1000)
                 Log.d(TAG, "Do Something $i")
             }
-            stopForeground(true)
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+                stopForeground(STOP_FOREGROUND_DETACH)
+            }else{
+                stopForeground(true)
+            }
             stopSelf()
             Log.d(TAG, "Service dihentikan")
         }
@@ -66,6 +78,10 @@ class MyForegroundService : Service() {
             .setContentText("Saat ini foreground service sedang berjalan.")
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentIntent(pendingIntent)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S){
+            notificationBuilder.setForegroundServiceBehavior(FOREGROUND_SERVICE_IMMEDIATE)
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(

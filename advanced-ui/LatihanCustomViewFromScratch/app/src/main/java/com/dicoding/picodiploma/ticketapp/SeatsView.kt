@@ -17,8 +17,16 @@ class SeatsView : View {
     private val mBounds = Rect()
     private val numberSeatPaint = Paint(Paint.FAKE_BOLD_TEXT_FLAG)
     private val titlePaint = Paint(Paint.FAKE_BOLD_TEXT_FLAG)
-    private val seats: ArrayList<Seat> = arrayListOf()
-
+    private val seats: ArrayList<Seat> = arrayListOf(
+        Seat(id = 1, name = "A1", isBooked = false),
+        Seat(id = 2, name = "A2", isBooked = false),
+        Seat(id = 3, name = "B1", isBooked = false),
+        Seat(id = 4, name = "A4", isBooked = false),
+        Seat(id = 5, name = "C1", isBooked = false),
+        Seat(id = 6, name = "C2", isBooked = false),
+        Seat(id = 7, name = "D1", isBooked = false),
+        Seat(id = 8, name = "D2", isBooked = false),
+    )
     var seat: Seat? = null
 
     constructor(context: Context) : super(context)
@@ -30,19 +38,6 @@ class SeatsView : View {
         attrs,
         defStyleAttr
     )
-
-    init {
-        seats.apply {
-            add(Seat(id = 1, name = "A1", isBooked = false))
-            add(Seat(id = 2, name =  "A2", isBooked = false))
-            add(Seat(id = 3, name = "B1", isBooked = false))
-            add(Seat(id = 4, name = "B2", isBooked = false))
-            add(Seat(id = 5, name =  "C1", isBooked = false))
-            add(Seat(id = 6, name = "C2", isBooked = false))
-            add(Seat(id = 7, name = "D1", isBooked = false))
-            add(Seat(id = 8, name = "D2", isBooked = false))
-        }
-    }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -146,25 +141,16 @@ class SeatsView : View {
         val heightRowTree = (halfOfHeight + 0F)..(halfOfHeight + 200F)
         val heightRowFour =(halfOfHeight + 300F)..(halfOfHeight + 500F)
 
-        when (event?.action) {
-            ACTION_DOWN -> {
-                if (event.x in widthColumnOne && event.y in heightRowOne ){
-                    booking(0)
-                } else if (event.x in widthColumnTwo && event.y in heightRowOne) {
-                    booking(1)
-                } else if (event.x in widthColumnOne && event.y in heightRowTwo) {
-                    booking(2)
-                } else if (event.x in widthColumnTwo && event.y in heightRowTwo) {
-                    booking(3)
-                } else if (event.x in widthColumnOne && event.y in heightRowTree) {
-                    booking(4)
-                } else if (event.x in widthColumnTwo && event.y in heightRowTree) {
-                    booking(5)
-                } else if (event.x in widthColumnOne && event.y in heightRowFour) {
-                    booking(6)
-                } else if (event.x in widthColumnTwo && event.y in heightRowFour) {
-                    booking(7)
-                }
+        if (event?.action == ACTION_DOWN) {
+            when {
+                event.x in widthColumnOne && event.y in heightRowOne -> booking(0)
+                event.x in widthColumnTwo && event.y in heightRowOne -> booking(1)
+                event.x in widthColumnOne && event.y in heightRowTwo -> booking(2)
+                event.x in widthColumnTwo && event.y in heightRowTwo -> booking(3)
+                event.x in widthColumnOne && event.y in heightRowTree -> booking(4)
+                event.x in widthColumnTwo && event.y in heightRowTree -> booking(5)
+                event.x in widthColumnOne && event.y in heightRowFour -> booking(6)
+                event.x in widthColumnTwo && event.y in heightRowFour -> booking(7)
             }
         }
         return true

@@ -8,36 +8,16 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.OnTouchListener
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 
-class MyEditText : AppCompatEditText, OnTouchListener {
+class MyEditText @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null
+) : AppCompatEditText(context, attrs), View.OnTouchListener {
 
-    private lateinit var clearButtonImage: Drawable
+    private var clearButtonImage: Drawable
 
-    constructor(context: Context) : super(context) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init()
-    }
-
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init()
-    }
-
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-        // Menambahkan hint pada editText
-        hint = "Masukkan nama Anda"
-
-        // Menambahkan text aligmnet pada editText
-        textAlignment = View.TEXT_ALIGNMENT_VIEW_START
-    }
-
-    private fun init() {
+    init {
         // Menginisialisasi gambar clear button
         clearButtonImage = ContextCompat.getDrawable(context, R.drawable.ic_close_black_24dp) as Drawable
 
@@ -58,6 +38,15 @@ class MyEditText : AppCompatEditText, OnTouchListener {
                 // Do nothing.
             }
         })
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        // Menambahkan hint pada editText
+        hint = "Masukkan nama Anda"
+
+        // Menambahkan text aligmnet pada editText
+        textAlignment = View.TEXT_ALIGNMENT_VIEW_START
     }
 
     // Menampilkan clear button

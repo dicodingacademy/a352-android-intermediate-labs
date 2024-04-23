@@ -15,19 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "1067668015581-4lgm80287hbbgsnfjc1jt3sfdji8vu0h.apps.googleusercontent.com",
+          "client_id": "1067668015581-tt5251tteiccl1mbtr7qee3upn8hnsjp.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.dicoding.myfirebasechat",
-            "certificate_hash": "66d9f32b4f3aa4fda59d49f955993d260ed0f46e"
-          }
-        },
-        {
-          "client_id": "1067668015581-qh00kh895o0nn3haltu4od24avlvug07.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.dicoding.myfirebasechat",
-            "certificate_hash": "34f48757f005d7d3f40701b025aa1fce25489124"
+            "certificate_hash": "8173b7748511fc2c5320a2f674607b2c97f3ebd4"
           }
         },
         {

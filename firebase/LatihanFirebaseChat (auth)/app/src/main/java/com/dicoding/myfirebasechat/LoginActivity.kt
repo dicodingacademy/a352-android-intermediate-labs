@@ -2,13 +2,17 @@ package com.dicoding.myfirebasechat
 
 import android.app.Activity
 import android.content.Intent
+import android.content.IntentSender
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.dicoding.myfirebasechat.databinding.ActivityLoginBinding
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -25,7 +29,8 @@ import com.google.firebase.ktx.Firebase
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var signInRequest: BeginSignInRequest
+    private lateinit var oneTapClient: SignInClient
     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,13 +41,19 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Configure Google Sign In
-        val gso = GoogleSignInOptions
-            .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
+        signInRequest = BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    // Your server's client ID, not your Android client ID.
+                    .setServerClientId(getString(R.string.your_web_client_id))
+                    // Only show accounts previously used to sign in.
+                    .setFilterByAuthorizedAccounts(true)
+                    .build()
+            )
             .build()
 
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
+        oneTapClient = Identity.getSignInClient(this)
 
         // Initialize Firebase Auth
         auth = Firebase.auth
@@ -53,26 +64,34 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun signIn() {
-        val signInIntent = googleSignInClient.signInIntent
-        resultLauncher.launch(signInIntent)
-    }
-
-    private var resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        oneTapClient.beginSignIn(signInRequest).addOnSuccessListener { result ->
             try {
-                // Google Sign In was successful, authenticate with Firebase
-                val account: GoogleSignInAccount = task.getResult(ApiException::class.java)!!
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
-                firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: ApiException) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e)
+                resultLauncher.launch(
+                    IntentSenderRequest.Builder(result.pendingIntent.intentSender).build()
+                )
+            } catch (e: IntentSender.SendIntentException) {
+                Log.e("Error", "Couldn't start One Tap UI: ${e.localizedMessage}")
             }
+        }.addOnFailureListener {
+            Log.d("Error", it.localizedMessage)
         }
     }
+
+    private var resultLauncher: ActivityResultLauncher<IntentSenderRequest> =
+        registerForActivityResult(
+            ActivityResultContracts.StartIntentSenderForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val googleCredential = oneTapClient.getSignInCredentialFromIntent(result.data)
+                val idToken = googleCredential.googleIdToken
+
+                if (idToken != null) {
+                    firebaseAuthWithGoogle(idToken)
+                } else {
+                    Log.d(TAG, "No ID token!")
+                }
+            }
+        }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential: AuthCredential = GoogleAuthProvider.getCredential(idToken, null)
@@ -92,7 +111,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun updateUI(currentUser: FirebaseUser?) {
-        if (currentUser != null){
+        if (currentUser != null) {
             startActivity(Intent(this@LoginActivity, MainActivity::class.java))
             finish()
         }

@@ -1,10 +1,12 @@
 package com.dicoding.newsapp.data
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.espresso.IdlingRegistry
 import com.dicoding.newsapp.MainDispatcherRule
 import com.dicoding.newsapp.data.local.room.NewsDao
 import com.dicoding.newsapp.data.remote.retrofit.ApiService
 import com.dicoding.newsapp.utils.DataDummy
+import com.dicoding.newsapp.utils.EspressoIdlingResource
 import com.dicoding.newsapp.utils.getOrAwaitValue
 import com.dicoding.newsapp.utils.observeForTesting
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,6 +38,7 @@ class NewsRepositoryTest {
     @Test
     fun `when getHeadlineNews Should Not Null`() = runTest {
         val expectedNews = DataDummy.generateDummyNewsResponse()
+
         val actualNews = newsRepository.getHeadlineNews()
         actualNews.observeForTesting {
             Assert.assertNotNull(actualNews)
@@ -44,6 +47,7 @@ class NewsRepositoryTest {
                 (actualNews.value as Result.Success).data.size
             )
         }
+
     }
 
     @Test

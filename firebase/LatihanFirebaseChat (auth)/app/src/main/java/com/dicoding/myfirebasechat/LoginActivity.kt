@@ -46,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
         val credentialManager = CredentialManager.create(this) //import from androidx.CredentialManager
 
         val googleIdOption = GetGoogleIdOption.Builder()
-            .setFilterByAuthorizedAccounts(true)
+            .setFilterByAuthorizedAccounts(false)
             .setServerClientId(getString(R.string.your_web_client_id)) //from https://console.firebase.google.com/project/my-firebase-chat-2aac3/authentication/providers
             .build()
 

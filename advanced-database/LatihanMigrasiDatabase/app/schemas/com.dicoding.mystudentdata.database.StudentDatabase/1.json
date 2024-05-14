@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4a4704abe50d24bd28bd4e663e729fcb",
+    "identityHash": "a9dcd1e2186f51eede97d189fa04e22c",
     "entities": [
       {
         "tableName": "Student",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`studentId` INTEGER NOT NULL, `name` TEXT NOT NULL, `univId` INTEGER NOT NULL, PRIMARY KEY(`studentId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`studentId` INTEGER NOT NULL, `name` TEXT NOT NULL, `univId` INTEGER NOT NULL, `isGraduate` INTEGER DEFAULT false, PRIMARY KEY(`studentId`))",
         "fields": [
           {
             "fieldPath": "studentId",
@@ -25,20 +25,27 @@
             "columnName": "univId",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "isGraduate",
+            "columnName": "isGraduate",
+            "affinity": "INTEGER",
+            "notNull": false,
+            "defaultValue": "false"
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "studentId"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
       },
       {
         "tableName": "University",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`universityId` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`universityId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`universityId` INTEGER NOT NULL, `universityName` TEXT NOT NULL, PRIMARY KEY(`universityId`))",
         "fields": [
           {
             "fieldPath": "universityId",
@@ -48,16 +55,16 @@
           },
           {
             "fieldPath": "name",
-            "columnName": "name",
+            "columnName": "universityName",
             "affinity": "TEXT",
             "notNull": true
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "universityId"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -80,10 +87,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "courseId"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -106,11 +113,11 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "sId",
             "cId"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [
           {
@@ -129,7 +136,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4a4704abe50d24bd28bd4e663e729fcb')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a9dcd1e2186f51eede97d189fa04e22c')"
     ]
   }
 }

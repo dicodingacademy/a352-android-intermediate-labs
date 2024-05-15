@@ -2,7 +2,6 @@ package com.dicoding.mystudentdata.database
 
 import android.content.Context
 import androidx.room.*
-import androidx.room.migration.AutoMigrationSpec
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.dicoding.mystudentdata.helper.InitialDataSource
 import kotlinx.coroutines.CoroutineScope
@@ -10,16 +9,10 @@ import kotlinx.coroutines.launch
 
 @Database(
     entities = [Student::class, University::class, Course::class, CourseStudentCrossRef::class],
-    version = 2,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2, spec = StudentDatabase.MyAutoMigration::class),
-    ],
-    exportSchema = true
+    version = 1,
+    exportSchema = false
 )
 abstract class StudentDatabase : RoomDatabase() {
-
-    @RenameColumn(tableName = "University", fromColumnName = "name", toColumnName = "universityName")
-    class MyAutoMigration : AutoMigrationSpec
 
     abstract fun studentDao(): StudentDao
 

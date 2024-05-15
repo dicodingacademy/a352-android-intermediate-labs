@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.application")
+    alias(libs.plugins.android.application)
     id("kotlin-android")
     id("com.google.devtools.ksp")
     id("kotlin-parcelize")
@@ -27,6 +27,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -41,33 +42,36 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.7.0")
-    implementation("androidx.appcompat:appcompat:1.4.1")
-    implementation("com.google.android.material:material:1.6.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.3")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.recyclerview)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation("androidx.room:room-ktx:2.4.0-rc01")
-    ksp("androidx.room:room-compiler:2.4.0-rc01")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.1")
-    implementation("androidx.activity:activity-ktx:1.4.0")
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.activity.ktx)
 
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.room.compiler)
 
-    implementation("androidx.paging:paging-runtime-ktx:3.1.0")
-    implementation("androidx.room:room-paging:2.4.0-rc01")
+    implementation(libs.lifecycle.livedata.ktx)
 
-    androidTestImplementation("androidx.arch.core:core-testing:2.1.0") //InstantTaskExecutorRule
-    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1") //TestDispatcher
-    testImplementation("androidx.arch.core:core-testing:2.1.0") // InstantTaskExecutorRule
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.1") //TestDispatcher
+    implementation(libs.retrofit)
+    implementation(libs.retrofit2.converter.gson)
+    implementation(libs.logging.interceptor)
 
-    //mockito
-    testImplementation("org.mockito:mockito-core:4.4.0")
-    testImplementation("org.mockito:mockito-inline:4.4.0")
+    implementation(libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.room.paging)
+
+    androidTestImplementation(libs.androidx.core.testing) //InstantTaskExecutorRule
+    androidTestImplementation(libs.kotlinx.coroutines.test) //TestDispatcher
+
+    testImplementation(libs.androidx.core.testing) // InstantTaskExecutorRule
+    testImplementation(libs.kotlinx.coroutines.test) //TestDispatcher
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
 }

@@ -4,9 +4,11 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.credentials.ClearCredentialStateRequest
+import androidx.credentials.CredentialManager
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.myfirebasechat.databinding.ActivityMainBinding
 import com.firebase.ui.database.FirebaseRecyclerOptions
@@ -15,7 +17,8 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.util.*
+import kotlinx.coroutines.launch
+import java.util.Date
 
 class MainActivity : AppCompatActivity() {
 
@@ -98,9 +101,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun signOut() {
-        auth.signOut()
-        startActivity(Intent(this, LoginActivity::class.java))
-        finish()
+        lifecycleScope.launch {
+            val credentialManager = CredentialManager.create(this@MainActivity)
+
+            auth.signOut()
+            credentialManager.clearCredentialState(ClearCredentialStateRequest())
+            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+            finish()
+        }
     }
 
     companion object {

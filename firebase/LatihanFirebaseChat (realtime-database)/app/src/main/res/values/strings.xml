@@ -3,4 +3,6 @@
     <string name="sign_out">Sign Out</string>
     <string name="send_success">Berhasil terkirim</string>
     <string name="send_error">Gagal terkirim</string>
+<!--    Get Web Client ID from https://console.firebase.google.com/u/0/project/FirebaseProjectName/authentication/providers-->
+<!--    <string name="your_web_client_id"></string> -->
 </resources>

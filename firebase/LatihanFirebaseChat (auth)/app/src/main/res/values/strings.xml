@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">My Firebase Chat</string>
     <string name="sign_out">Sign Out</string>
+
+<!--    Get Web Client ID from https://console.firebase.google.com/u/0/project/FirebaseProjectName/authentication/providers-->
+<!--    <string name="your_web_client_id"></string> -->
 </resources>

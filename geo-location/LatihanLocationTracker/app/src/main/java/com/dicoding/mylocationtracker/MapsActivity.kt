@@ -148,11 +148,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
     private fun createLocationRequest() {
-        locationRequest = LocationRequest.create().apply {
-            interval = TimeUnit.SECONDS.toMillis(1)
-            maxWaitTime = TimeUnit.SECONDS.toMillis(1)
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
+
+        val priority = Priority.PRIORITY_HIGH_ACCURACY
+        val interval = TimeUnit.SECONDS.toMillis(1)
+        val maxWaitTime = TimeUnit.SECONDS.toMillis(1)
+
+        locationRequest = LocationRequest.Builder(
+            priority,
+            interval
+        ).apply {
+            setMaxUpdateDelayMillis(maxWaitTime)
+        }.build()
 
         val builder = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest)

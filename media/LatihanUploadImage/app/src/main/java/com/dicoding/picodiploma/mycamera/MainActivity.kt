@@ -89,6 +89,8 @@ class MainActivity : AppCompatActivity() {
     ) { isSuccess ->
         if (isSuccess) {
             showImage()
+        } else {
+            currentImageUri = null
         }
     }
 
